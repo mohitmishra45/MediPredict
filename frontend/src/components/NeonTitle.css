@@ -1,0 +1,87 @@
+.neon-title-container {
+    text-align: center;
+    padding: 1rem;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+.neon-title-text {
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.neon-char {
+    opacity: 0;
+    display: inline-block;
+    animation: neon-typewriter 4s infinite;
+}
+
+/* "YOUR" part - light gray, thinner */
+.neon-title-prefix .neon-char {
+    color: #9ca3af;
+    font-weight: 300;
+    text-shadow: 0 0 5px rgba(156, 163, 175, 0.3);
+}
+
+/* "MEDICAL ASSISTANT" part - bold, dynamic color */
+.neon-title-main .neon-char {
+    color: var(--color-primary);
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--glow-primary);
+}
+
+/* Looping Typewriter Animation */
+@keyframes neon-typewriter {
+    0% {
+        opacity: 0;
+        transform: translateY(5px);
+        filter: blur(5px);
+    }
+
+    5%,
+    45% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+
+    55%,
+    100% {
+        opacity: 0;
+        transform: translateY(-5px);
+        filter: blur(5px);
+    }
+}
+
+/* Continuous Pulse Animation for the main text */
+.neon-title-main {
+    animation: neon-pulse-container 2s infinite alternate ease-in-out;
+}
+
+@keyframes neon-pulse-container {
+    0% {
+        filter: drop-shadow(0 0 2px var(--color-primary));
+        opacity: 0.8;
+    }
+
+    100% {
+        filter: drop-shadow(0 0 8px var(--color-primary));
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .neon-title-text {
+        font-size: 1.75rem;
+    }
+}
