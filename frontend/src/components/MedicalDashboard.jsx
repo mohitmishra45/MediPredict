@@ -80,7 +80,10 @@ const MedicalDashboard = () => {
         fetch(`${apiUrl}/api/metrics`)
             .then(res => res.json())
             .then(data => setAccuracyScores(data))
-            .catch(err => console.error("Failed to fetch metrics", err));
+            .catch(err => {
+                console.error("Failed to fetch metrics", err);
+                alert(`Failed to fetch metrics from ${apiUrl}. Error: ${err.message}`);
+            });
     }, []);
 
     useEffect(() => {
