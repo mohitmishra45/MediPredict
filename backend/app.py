@@ -23,6 +23,10 @@ app.register_blueprint(stroke_bp, url_prefix='/api')
 def status():
     return jsonify({"status": "running"})
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "MedPredict API is running. Access endpoints at /api/..."})
+
 @app.route('/api/metrics', methods=['GET'])
 def get_metrics():
     models = ['diabetes', 'heart', 'kidney', 'liver', 'lung', 'stroke']
