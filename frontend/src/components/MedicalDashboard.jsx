@@ -76,7 +76,8 @@ const MedicalDashboard = () => {
     const [accuracyScores, setAccuracyScores] = useState({});
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/metrics')
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+        fetch(`${apiUrl}/api/metrics`)
             .then(res => res.json())
             .then(data => setAccuracyScores(data))
             .catch(err => console.error("Failed to fetch metrics", err));
@@ -271,7 +272,8 @@ const MedicalDashboard = () => {
         // Simulate analysis delay
         setTimeout(async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:5000/api/predict/${diseaseId}`, {
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+                const response = await fetch(`${apiUrl}/api/predict/${diseaseId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
