@@ -39,7 +39,9 @@ Now we deploy the React frontend and connect it to the backend.
 3.  Import your GitHub repository (`MediPredict-AI`).
 4.  Configure the project:
     *   **Framework Preset**: **Vite** (should be auto-detected).
-    *   **Root Directory**: Click `Edit` and select `frontend`.
+    *   **Root Directory**: **IMPORTANT:** Click `Edit` and select `frontend`.
+    *   **Build Command**: `npm run build` (or default `vite build`)
+    *   **Output Directory**: `dist` (default)
 5.  **Environment Variables**:
     *   Expand the "Environment Variables" section.
     *   Key: `VITE_API_URL`
