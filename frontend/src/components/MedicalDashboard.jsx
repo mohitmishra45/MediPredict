@@ -298,7 +298,7 @@ const MedicalDashboard = () => {
                 }
             } catch (error) {
                 console.error("Error submitting form:", error);
-                alert("Failed to connect to the server.");
+                alert(`Failed to connect to the server at ${apiUrl}. Error: ${error.message}`);
             } finally {
                 setIsAnalyzing(false);
             }
