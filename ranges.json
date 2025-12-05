@@ -1,0 +1,272 @@
+{
+  "heart": {
+    "Age": {
+      "min": 29.0,
+      "max": 77.0
+    },
+    "Sex": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "Chest pain type": {
+      "min": 1.0,
+      "max": 4.0
+    },
+    "BP": {
+      "min": 94.0,
+      "max": 200.0
+    },
+    "Cholesterol": {
+      "min": 126.0,
+      "max": 564.0
+    },
+    "FBS over 120": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "EKG results": {
+      "min": 0.0,
+      "max": 2.0
+    },
+    "Max HR": {
+      "min": 71.0,
+      "max": 202.0
+    },
+    "Exercise angina": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "ST depression": {
+      "min": 0.0,
+      "max": 6.2
+    },
+    "Slope of ST": {
+      "min": 1.0,
+      "max": 3.0
+    },
+    "Number of vessels fluro": {
+      "min": 0.0,
+      "max": 3.0
+    },
+    "Thallium": {
+      "min": 3.0,
+      "max": 7.0
+    }
+  },
+  "diabetes": {
+    "Pregnancies": {
+      "min": 0.0,
+      "max": 17.0
+    },
+    "Glucose": {
+      "min": 0.0,
+      "max": 199.0
+    },
+    "Blood pressure": {
+      "min": 0.0,
+      "max": 122.0
+    },
+    "Skin thickness": {
+      "min": 0.0,
+      "max": 99.0
+    },
+    "Insulin": {
+      "min": 0.0,
+      "max": 846.0
+    },
+    "Body mass index": {
+      "min": 0.0,
+      "max": 67.1
+    },
+    "Diabetes pedigree function": {
+      "min": 0.078,
+      "max": 2.42
+    },
+    "Age": {
+      "min": 21.0,
+      "max": 81.0
+    },
+    "Outcome": {
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "kidney": {
+    "id": {
+      "min": 0.0,
+      "max": 399.0
+    },
+    "age": {
+      "min": 2.0,
+      "max": 90.0
+    },
+    "bp": {
+      "min": 50.0,
+      "max": 180.0
+    },
+    "sg": {
+      "min": 1.005,
+      "max": 1.025
+    },
+    "al": {
+      "min": 0.0,
+      "max": 5.0
+    },
+    "su": {
+      "min": 0.0,
+      "max": 5.0
+    },
+    "bgr": {
+      "min": 22.0,
+      "max": 490.0
+    },
+    "bu": {
+      "min": 1.5,
+      "max": 391.0
+    },
+    "sc": {
+      "min": 0.4,
+      "max": 76.0
+    },
+    "sod": {
+      "min": 4.5,
+      "max": 163.0
+    },
+    "pot": {
+      "min": 2.5,
+      "max": 47.0
+    },
+    "hemo": {
+      "min": 3.1,
+      "max": 17.8
+    }
+  },
+  "lung": {
+    "index": {
+      "min": 0.0,
+      "max": 999.0
+    },
+    "Age": {
+      "min": 14.0,
+      "max": 73.0
+    },
+    "Gender": {
+      "min": 1.0,
+      "max": 2.0
+    },
+    "Air Pollution": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Alcohol use": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Dust Allergy": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "OccuPational Hazards": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Genetic Risk": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "chronic Lung Disease": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "Balanced Diet": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "Obesity": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "Smoking": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Passive Smoker": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Chest Pain": {
+      "min": 1.0,
+      "max": 9.0
+    },
+    "Coughing of Blood": {
+      "min": 1.0,
+      "max": 9.0
+    },
+    "Fatigue": {
+      "min": 1.0,
+      "max": 9.0
+    },
+    "Weight Loss": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Shortness of Breath": {
+      "min": 1.0,
+      "max": 9.0
+    },
+    "Wheezing": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Swallowing Difficulty": {
+      "min": 1.0,
+      "max": 8.0
+    },
+    "Clubbing of Finger Nails": {
+      "min": 1.0,
+      "max": 9.0
+    },
+    "Frequent Cold": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "Dry Cough": {
+      "min": 1.0,
+      "max": 7.0
+    },
+    "Snoring": {
+      "min": 1.0,
+      "max": 7.0
+    }
+  },
+  "stroke": {
+    "id": {
+      "min": 67.0,
+      "max": 72940.0
+    },
+    "age": {
+      "min": 0.08,
+      "max": 82.0
+    },
+    "hypertension": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "heart_disease": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "avg_glucose_level": {
+      "min": 55.12,
+      "max": 271.74
+    },
+    "bmi": {
+      "min": 10.3,
+      "max": 97.6
+    },
+    "stroke": {
+      "min": 0.0,
+      "max": 1.0
+    }
+  }
+}

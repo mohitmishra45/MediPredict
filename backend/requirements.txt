@@ -5,3 +5,6 @@ numpy
 scikit-learn
 joblib
 gunicorn
+google-generativeai
+seaborn
+matplotlib

@@ -104,12 +104,14 @@ const Input = React.forwardRef(({
             </div>
 
             {/* Helper Text / Error Message */}
-            {(helperText || error) && (
+            {(helperText || error || (isFocused && (props.min !== undefined || props.max !== undefined))) && (
                 <p className={`
           mt-1.5 text-sm px-1
           ${error ? 'text-red-400' : success ? 'text-green-400' : 'text-gray-500'}
         `}>
-                    {error || helperText}
+                    {error || (isFocused && (props.min !== undefined || props.max !== undefined)
+                        ? `Please fill (Min: ${props.min}, Max: ${props.max})`
+                        : helperText)}
                 </p>
             )}
         </div>

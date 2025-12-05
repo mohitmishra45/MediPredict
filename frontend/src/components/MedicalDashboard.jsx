@@ -20,7 +20,17 @@ import {
     TrendingUp,
     Stethoscope,
     CheckCircle2,
-    AlertCircle
+    AlertCircle,
+
+    Github,
+    Sparkles,
+    Send,
+    Bot,
+    User as UserIcon,
+    Image as ImageIcon,
+    BarChart2,
+    ChevronDown,
+    FileText
 } from 'lucide-react';
 import Logo3D from './Logo3D';
 import ParticleBackground from './ParticleBackground';
@@ -41,8 +51,10 @@ import liver3d from '../assets/liver-3d.png';
 import diabetes3d from '../assets/diabetes-3d.png';
 // Placeholders for now, will be replaced by generated images
 import brain3d from '../assets/brain-3d.png';
-import lung3d from '../assets/lungs-3d.png';
+
 import kidney3d from '../assets/kidney-3d.png';
+import robot3d from '../assets/robot-3d.png';
+
 
 const MedicalDashboard = () => {
     const [activeTab, setActiveTab] = useState(() => {
@@ -74,6 +86,90 @@ const MedicalDashboard = () => {
     const [themeColor, setThemeColor] = useState('#f97316'); // Default Orange
     const [showSettings, setShowSettings] = useState(false);
     const [accuracyScores, setAccuracyScores] = useState({});
+
+    // Chat State
+    const [chatMessages, setChatMessages] = useState([
+        { role: 'bot', text: "Hello! I'm your AI health assistant. Describe your symptoms or ask me any health-related questions, and I'll help you analyze them." }
+    ]);
+    const [chatInput, setChatInput] = useState('');
+    const [chatImage, setChatImage] = useState(null);
+    const [isChatLoading, setIsChatLoading] = useState(false);
+    const chatEndRef = React.useRef(null);
+    const fileInputRef = React.useRef(null);
+
+    const [notebooks, setNotebooks] = useState([]);
+    const [plots, setPlots] = useState([]);
+    const [selectedNotebook, setSelectedNotebook] = useState(null);
+    const [selectedPlot, setSelectedPlot] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const scrollToBottom = () => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatMessages, activeTab]);
+
+    useEffect(() => {
+        if (activeTab === 'notebooks') {
+            fetch('http://127.0.0.1:5000/api/analysis/notebooks')
+                .then(res => res.json())
+                .then(data => setNotebooks(data))
+                .catch(err => console.error(err));
+        } else if (activeTab === 'correlations') {
+            fetch('http://127.0.0.1:5000/api/analysis/plots')
+                .then(res => res.json())
+                .then(data => setPlots(data))
+                .catch(err => console.error(err));
+        }
+    }, [activeTab]);
+
+    const handleChatSubmit = async (e) => {
+        e.preventDefault();
+        if (!chatInput.trim()) return;
+
+        const userMessage = chatInput;
+        const currentImage = chatImage;
+
+        // Create message object for UI
+        const uiMessage = { role: 'user', text: userMessage };
+        if (currentImage) {
+            uiMessage.image = currentImage;
+        }
+
+        setChatMessages(prev => [...prev, uiMessage]);
+        setChatInput('');
+        setChatImage(null);
+        setIsChatLoading(true);
+
+        try {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+            const response = await fetch(`${apiUrl}/api/ai-tracker/chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    image: currentImage // This is already a base64 string from the reader
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setChatMessages(prev => [...prev, { role: 'bot', text: data.response }]);
+            } else {
+                setChatMessages(prev => [...prev, { role: 'bot', text: `Error: ${data.error || 'Failed to get response'}` }]);
+            }
+        } catch (error) {
+            console.error("Chat error:", error);
+            setChatMessages(prev => [...prev, { role: 'bot', text: "Sorry, I'm having trouble connecting to the server. Please try again later." }]);
+        } finally {
+            setIsChatLoading(false);
+        }
+    };
 
     useEffect(() => {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
@@ -149,12 +245,12 @@ const MedicalDashboard = () => {
             gradient: 'from-rose-500 to-pink-600',
             description: 'Cardiovascular health assessment',
             fields: [
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
+                { name: 'age', label: 'Age', type: 'number', min: 29, max: 77 },
                 { name: 'sex', label: 'Sex (1=Male, 0=Female)', type: 'number', min: 0, max: 1 },
-                { name: 'cp', label: 'Chest Pain Type (0-3)', type: 'number', min: 0, max: 3 },
-                { name: 'trestbps', label: 'Resting Blood Pressure', type: 'number', min: 80, max: 200 },
-                { name: 'chol', label: 'Cholesterol (mg/dl)', type: 'number', min: 100, max: 400 },
-                { name: 'thalach', label: 'Max Heart Rate', type: 'number', min: 60, max: 220 },
+                { name: 'cp', label: 'Chest Pain Type (1-4)', type: 'number', min: 1, max: 4 },
+                { name: 'trestbps', label: 'Resting Blood Pressure', type: 'number', min: 94, max: 200 },
+                { name: 'chol', label: 'Cholesterol (mg/dl)', type: 'number', min: 126, max: 564 },
+                { name: 'thalach', label: 'Max Heart Rate', type: 'number', min: 71, max: 202 },
             ]
         },
         {
@@ -169,12 +265,12 @@ const MedicalDashboard = () => {
             gradient: 'from-blue-500 to-cyan-600',
             description: 'Blood glucose & insulin analysis',
             fields: [
-                { name: 'glucose', label: 'Glucose Level (mg/dL)', type: 'number', min: 0, max: 300 },
-                { name: 'bloodPressure', label: 'Blood Pressure (mmHg)', type: 'number', min: 0, max: 200 },
-                { name: 'bmi', label: 'BMI', type: 'number', min: 10, max: 60, step: 0.1 },
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
-                { name: 'insulin', label: 'Insulin Level', type: 'number', min: 0, max: 900 },
-                { name: 'pregnancies', label: 'Pregnancies', type: 'number', min: 0, max: 20 },
+                { name: 'glucose', label: 'Glucose Level (mg/dL)', type: 'number', min: 0, max: 199 },
+                { name: 'bloodPressure', label: 'Blood Pressure (mmHg)', type: 'number', min: 0, max: 122 },
+                { name: 'bmi', label: 'BMI', type: 'number', min: 0, max: 67.1, step: 0.1 },
+                { name: 'age', label: 'Age', type: 'number', min: 21, max: 81 },
+                { name: 'insulin', label: 'Insulin Level', type: 'number', min: 0, max: 846 },
+                { name: 'pregnancies', label: 'Pregnancies', type: 'number', min: 0, max: 17 },
             ]
         },
         {
@@ -189,55 +285,12 @@ const MedicalDashboard = () => {
             gradient: 'from-violet-500 to-purple-600',
             description: 'Cerebrovascular risk evaluation',
             fields: [
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
+                { name: 'age', label: 'Age', type: 'number', min: 0, max: 82 },
                 { name: 'hypertension', label: 'Hypertension (1=Yes, 0=No)', type: 'number', min: 0, max: 1 },
                 { name: 'heartDisease', label: 'Heart Disease (1=Yes, 0=No)', type: 'number', min: 0, max: 1 },
-                { name: 'avgGlucoseLevel', label: 'Avg Glucose Level', type: 'number', min: 50, max: 300 },
-                { name: 'bmi', label: 'BMI', type: 'number', min: 10, max: 60, step: 0.1 },
+                { name: 'avgGlucoseLevel', label: 'Avg Glucose Level', type: 'number', min: 55, max: 272 },
+                { name: 'bmi', label: 'BMI', type: 'number', min: 10, max: 98, step: 0.1 },
                 { name: 'smokingStatus', label: 'Smoking Status (formerly smoked, never smoked, smokes, Unknown)', type: 'text' },
-            ]
-        },
-        {
-            id: 'lung',
-            name: 'Lung Cancer',
-            shortName: 'Lung',
-            icon: Wind,
-            image: lung3d,
-            color: 'text-emerald-500',
-            bg: 'bg-emerald-500/10',
-            border: 'border-emerald-500/20',
-            gradient: 'from-emerald-500 to-teal-600',
-            description: 'Respiratory health screening',
-            fields: [
-                { name: 'gender', label: 'Gender (Male/Female)', type: 'text' },
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
-                { name: 'passiveSmoker', label: 'Passive Smoker (1-8)', type: 'number', min: 1, max: 8 },
-                { name: 'coughingOfBlood', label: 'Coughing of Blood (1-8)', type: 'number', min: 1, max: 8 },
-                { name: 'balancedDiet', label: 'Balanced Diet (1-8)', type: 'number', min: 1, max: 8 },
-                { name: 'smoking', label: 'Smoking (1-8)', type: 'number', min: 1, max: 8 },
-                { name: 'airPollution', label: 'Air Pollution (1-8)', type: 'number', min: 1, max: 8 },
-                { name: 'obesity', label: 'Obesity (1-8)', type: 'number', min: 1, max: 8 },
-            ]
-        },
-        {
-            id: 'kidney',
-            name: 'Kidney Disease',
-            shortName: 'Kidney',
-            icon: Activity,
-            image: kidney3d,
-            color: 'text-amber-500',
-            bg: 'bg-amber-500/10',
-            border: 'border-amber-500/20',
-            gradient: 'from-amber-500 to-orange-600',
-            description: 'Renal function assessment',
-            fields: [
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
-                { name: 'serumCreatinine', label: 'Serum Creatinine', type: 'number', step: 0.1 },
-                { name: 'hemoglobin', label: 'Hemoglobin', type: 'number', step: 0.1 },
-                { name: 'albumin', label: 'Albumin', type: 'number', step: 0.1 },
-                { name: 'specificGravity', label: 'Specific Gravity', type: 'number', step: 0.001 },
-                { name: 'bloodUrea', label: 'Blood Urea', type: 'number', step: 0.1 },
-                { name: 'hypertension', label: 'Hypertension (yes/no)', type: 'text' },
             ]
         },
         {
@@ -252,12 +305,46 @@ const MedicalDashboard = () => {
             gradient: 'from-orange-500 to-red-600',
             description: 'Hepatic health analysis',
             fields: [
-                { name: 'age', label: 'Age', type: 'number', min: 1, max: 120 },
+                { name: 'age', label: 'Age', type: 'number', min: 4, max: 90 },
                 { name: 'gender', label: 'Gender (Male/Female)', type: 'text' },
-                { name: 'totalBilirubin', label: 'Total Bilirubin', type: 'number', min: 0, max: 10, step: 0.1 },
-                { name: 'directBilirubin', label: 'Direct Bilirubin', type: 'number', min: 0, max: 5, step: 0.1 },
-                { name: 'sgot', label: 'SGOT (AST)', type: 'number', min: 0, max: 500 },
+                { name: 'totalBilirubin', label: 'Total Bilirubin', type: 'number', min: 0.4, max: 75, step: 0.1 },
+                { name: 'directBilirubin', label: 'Direct Bilirubin', type: 'number', min: 0.1, max: 19.7, step: 0.1 },
+                { name: 'sgot', label: 'SGOT (AST)', type: 'number', min: 10, max: 4929 },
             ]
+        },
+        {
+            id: 'kidney',
+            name: 'Kidney Disease',
+            shortName: 'Kidney',
+            icon: Activity,
+            image: kidney3d,
+            color: 'text-amber-500',
+            bg: 'bg-amber-500/10',
+            border: 'border-amber-500/20',
+            gradient: 'from-amber-500 to-orange-600',
+            description: 'Renal function assessment',
+            fields: [
+                { name: 'age', label: 'Age', type: 'number', min: 2, max: 90 },
+                { name: 'serumCreatinine', label: 'Serum Creatinine', type: 'number', min: 0.4, max: 76, step: 0.1 },
+                { name: 'hemoglobin', label: 'Hemoglobin', type: 'number', min: 3.1, max: 17.8, step: 0.1 },
+                { name: 'albumin', label: 'Albumin', type: 'number', min: 0, max: 5, step: 0.1 },
+                { name: 'specificGravity', label: 'Specific Gravity', type: 'number', min: 1.005, max: 1.025, step: 0.001 },
+                { name: 'bloodUrea', label: 'Blood Urea', type: 'number', min: 1.5, max: 391, step: 0.1 },
+                { name: 'hypertension', label: 'Hypertension (yes/no)', type: 'text' },
+            ]
+        },
+        {
+            id: 'ai-tracker',
+            name: 'AI Disease Tracker',
+            shortName: 'AI',
+            icon: Sparkles,
+            image: robot3d,
+            color: 'text-indigo-500',
+            bg: 'bg-indigo-500/10',
+            border: 'border-indigo-500/20',
+            gradient: 'from-indigo-500 to-purple-600',
+            description: 'Advanced AI-powered symptom checker and health assistant',
+            fields: [] // No standard fields, uses chat interface
         }
     ];
 
@@ -310,26 +397,39 @@ const MedicalDashboard = () => {
 
     // Smart Header Logic
     const [showNavbar, setShowNavbar] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const lastScrollY = React.useRef(0);
 
     useEffect(() => {
         const controlNavbar = () => {
             if (typeof window !== 'undefined') {
-                if (window.scrollY > lastScrollY && window.scrollY > 100) { // if scroll down hide the navbar
+                const currentScrollY = window.scrollY;
+
+                if (currentScrollY > lastScrollY.current && currentScrollY > 100) { // if scroll down hide the navbar
                     setShowNavbar(false);
                 } else { // if scroll up show the navbar
                     setShowNavbar(true);
                 }
-                setLastScrollY(window.scrollY);
+                lastScrollY.current = currentScrollY;
             }
         };
 
-        window.addEventListener('scroll', controlNavbar);
+        let timeoutId;
+        const throttledControlNavbar = () => {
+            if (!timeoutId) {
+                timeoutId = setTimeout(() => {
+                    controlNavbar();
+                    timeoutId = null;
+                }, 100); // Throttle to 100ms
+            }
+        };
+
+        window.addEventListener('scroll', throttledControlNavbar);
 
         return () => {
-            window.removeEventListener('scroll', controlNavbar);
+            window.removeEventListener('scroll', throttledControlNavbar);
+            if (timeoutId) clearTimeout(timeoutId);
         };
-    }, [lastScrollY]);
+    }, []);
 
     return (
         <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} transition-colors duration-300 font-sans relative overflow-x-hidden`}>
@@ -337,16 +437,16 @@ const MedicalDashboard = () => {
             <ParticleBackground darkMode={darkMode} />
 
             {/* Top Header */}
-            <header className={`fixed top-0 left-0 right-0 z-50 h-20 md:h-24 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-8 m-2 md:m-4 mb-0 rounded-2xl transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-[150%]'}`}>
+            <header className={`fixed top-0 left-0 right-0 z-50 h-16 md:h-20 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-6 m-2 md:m-4 mb-0 rounded-2xl transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-[150%]'}`}>
 
                 {/* Logo Area */}
                 <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => setActiveTab('home')}>
                     <div className="relative transform transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
                         <div className="absolute inset-0 bg-[var(--color-primary)]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <Logo3D size={56} />
+                        <Logo3D size={40} />
                     </div>
                     <div>
-                        <h1 className="hidden xl:block text-3xl font-bold tracking-tight text-white group-hover:text-[var(--color-primary)] transition-colors duration-300"
+                        <h1 className="hidden 2xl:block text-2xl font-bold tracking-tight text-white group-hover:text-[var(--color-primary)] transition-colors duration-300"
                             style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,65,0.2)' }}>
                             MedPredict <span className="text-[var(--color-primary)]">AI</span>
                         </h1>
@@ -354,7 +454,7 @@ const MedicalDashboard = () => {
                 </div>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center space-x-1 lg:space-x-4 absolute left-1/2 transform -translate-x-1/2">
+                <nav className="hidden lg:flex items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
                     {
                         diseases.map((d) => {
                             const Icon = d.icon;
@@ -362,13 +462,13 @@ const MedicalDashboard = () => {
                                 <Tooltip key={d.id} content={d.name}>
                                     <button
                                         onClick={() => setActiveTab(d.id)}
-                                        className={`group relative flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium
+                                        className={`group relative flex items-center space-x-2 px-3 py-1.5 rounded-xl transition-all duration-300 font-medium
                         ${activeTab === d.id ?
                                                 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-bold shadow-[0_0_15px_var(--glow-primary)] border border-[var(--color-primary)]/20' :
                                                 'text-slate-300 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_10px_var(--glow-subtle)]'}`}
                                     >
-                                        <img src={d.image} alt={d.name} className="w-8 h-8 rounded-full object-cover drop-shadow-[0_0_5px_rgba(0,0,0,0.5)]" />
-                                        <span className="hidden xl:inline">{d.shortName}</span>
+                                        <img src={d.image} alt={d.name} className="w-6 h-6 rounded-full object-cover drop-shadow-[0_0_5px_rgba(0,0,0,0.5)]" />
+                                        <span className="hidden 2xl:inline text-sm">{d.shortName}</span>
                                     </button>
                                 </Tooltip>
                             )
@@ -378,13 +478,13 @@ const MedicalDashboard = () => {
                     <Tooltip content="About Us">
                         <button
                             onClick={() => setActiveTab('about')}
-                            className={`group relative flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium
+                            className={`group relative flex items-center space-x-2 px-3 py-1.5 rounded-xl transition-all duration-300 font-medium
                         ${activeTab === 'about' ?
                                     'bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-bold shadow-[0_0_15px_var(--glow-primary)] border border-[var(--color-primary)]/20' :
                                     'text-slate-300 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 hover:shadow-[0_0_10px_var(--glow-subtle)]'}`}
                         >
-                            <Info size={24} />
-                            <span className="hidden xl:inline">About</span>
+                            <Info size={20} />
+                            <span className="hidden 2xl:inline text-sm">About</span>
                         </button>
                     </Tooltip>
                 </nav>
@@ -392,6 +492,14 @@ const MedicalDashboard = () => {
                 {/* Right Side Actions */}
                 <div className="flex items-center space-x-2 lg:space-x-4">
 
+                    {/* Data Analysis Button */}
+                    <button
+                        onClick={() => setActiveTab('analysis')}
+                        className={`p-2 rounded-xl transition-colors ${activeTab === 'analysis' || activeTab === 'notebooks' || activeTab === 'correlations' ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
+                        title="Data Analysis"
+                    >
+                        <BarChart2 size={20} />
+                    </button>
                     {/* Dark Mode Toggle */}
                     <button
                         onClick={() => setDarkMode(!darkMode)}
@@ -404,7 +512,6 @@ const MedicalDashboard = () => {
                     {/* Settings Toggle */}
                     <div className="relative">
                         <button
-                            onClick={() => setShowSettings(!showSettings)}
                             className={`p-2 rounded-xl transition-colors ${showSettings ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
                             title="Theme Settings"
                         >
@@ -412,41 +519,69 @@ const MedicalDashboard = () => {
                         </button>
 
                         {/* Settings Popover */}
-                        {
-                            showSettings && (
-                                <div className="absolute right-0 mt-4 w-64 glass-panel p-4 rounded-2xl border border-white/10 shadow-xl z-50 animate-fade-in backdrop-blur-xl bg-black/80">
-                                    <h3 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Theme Color</h3>
-                                    <div className="grid grid-cols-4 gap-3">
-                                        {colors.map((color) => (
-                                            <button
-                                                key={color.name}
-                                                onClick={() => setThemeColor(color.value)}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-110 border border-white/10`}
-                                                style={{ backgroundColor: color.value, boxShadow: themeColor === color.value ? `0 0 10px ${color.value}` : 'none' }}
-                                                title={color.name}
-                                            >
-                                                {themeColor === color.value && <Check size={16} className="text-white drop-shadow-md" strokeWidth={3} />}
-                                            </button>
-                                        ))}
-                                    </div>
+                        {showSettings && (
+                            <div className="absolute right-0 mt-4 w-64 glass-panel p-4 rounded-2xl border border-white/10 shadow-xl z-50 animate-fade-in backdrop-blur-xl bg-black/80">
+                                <h3 className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">Theme Color</h3>
+                                <div className="grid grid-cols-4 gap-3">
+                                    {colors.map((color) => (
+                                        <button
+                                            key={color.name}
+                                            onClick={() => setThemeColor(color.value)}
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-110 border border-white/10`}
+                                            style={{ backgroundColor: color.value, boxShadow: themeColor === color.value ? `0 0 10px ${color.value}` : 'none' }}
+                                            title={color.name}
+                                        >
+                                            {themeColor === color.value && <Check size={16} className="text-white drop-shadow-md" strokeWidth={3} />}
+                                        </button>
+                                    ))}
                                 </div>
-                            )
-                        }
-                    </div >
+                            </div>
+                        )}
+                    </div>
 
-                    {/* Mobile menu toggle */}
+                    {/* Mobile Menu Toggle */}
                     <button
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="md:hidden text-white p-2 rounded-lg hover:bg-white/10"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="lg:hidden p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                     >
-                        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
 
-            </header>
+                {/* Mobile Navigation Menu */}
+                {isMobileMenuOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 mx-4 p-4 glass-panel rounded-2xl border border-white/10 shadow-xl flex flex-col space-y-2 lg:hidden animate-fade-in z-50">
+                        {diseases.map((d) => (
+                            <button
+                                key={d.id}
+                                onClick={() => {
+                                    setActiveTab(d.id);
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${activeTab === d.id ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' : 'text-slate-300 hover:bg-white/5'}`}
+                            >
+                                <img src={d.image} alt={d.name} className="w-8 h-8 rounded-full object-cover" />
+                                <span>{d.name}</span>
+                            </button>
+                        ))}
+                        <div className="h-px bg-white/10 my-2"></div>
+                        <button
+                            onClick={() => {
+                                setActiveTab('about');
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${activeTab === 'about' ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' : 'text-slate-300 hover:bg-white/5'}`}
+                        >
+                            <Info size={20} />
+                            <span>About Us</span>
+                        </button>
+                    </div>
+                )}
+
+            </header >
 
             {/* Mobile Menu Overlay */}
-            <div className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}>
+            < div className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}>
                 <div className={`absolute right-0 top-0 h-full w-80 glass-panel border-l border-white/10 p-6 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col space-y-6 mt-20">
                         {diseases.map((d) => (
@@ -474,14 +609,14 @@ const MedicalDashboard = () => {
                         </button>
                     </div>
                 </div>
-            </div>
+            </div >
 
 
             {/* Main Content Area */}
-            <main className={`flex-1 min-h-screen transition-all duration-300 pt-24`}>
+            < main className={`flex-1 min-h-screen transition-all duration-300 pt-24`}>
                 {/* Mobile Header Removed as it's replaced by the global Top Header */}
 
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                < div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl" >
                     {activeTab === 'home' ? (
                         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-6rem)] py-12 animate-fade-in">
                             {/* Hero Section */}
@@ -660,14 +795,293 @@ const MedicalDashboard = () => {
                                             ))}
                                         </div>
                                     </div>
+
                                 </GlassCard>
                             </div>
+                        </div>
+                    ) : activeTab === 'analysis' ? (
+                        <div className="animate-fade-in w-full max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
+                            <h2 className="text-4xl font-bold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Data Analysis Hub</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+                                <button
+                                    onClick={() => setActiveTab('notebooks')}
+                                    className="w-full text-left focus:outline-none"
+                                >
+                                    <GlassCard
+                                        className="h-full p-8 border-indigo-500/20 hover:border-indigo-500/50 cursor-pointer group transition-all duration-300 hover:scale-105"
+                                        hoverEffect={true}
+                                    >
+                                        <div className="flex flex-col items-center text-center">
+                                            <div className="p-6 rounded-full bg-indigo-500/10 mb-6 group-hover:bg-indigo-500/20 transition-colors">
+                                                <FileText size={48} className="text-indigo-400" />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-white mb-4">Jupyter Notebooks</h3>
+                                            <p className="text-gray-400">Explore detailed data analysis, model training logs, and performance metrics directly from your notebooks.</p>
+                                        </div>
+                                    </GlassCard>
+                                </button>
+
+                                <button
+                                    onClick={() => setActiveTab('correlations')}
+                                    className="w-full text-left focus:outline-none"
+                                >
+                                    <GlassCard
+                                        className="h-full p-8 border-cyan-500/20 hover:border-cyan-500/50 cursor-pointer group transition-all duration-300 hover:scale-105"
+                                        hoverEffect={true}
+                                    >
+                                        <div className="flex flex-col items-center text-center">
+                                            <div className="p-6 rounded-full bg-cyan-500/10 mb-6 group-hover:bg-cyan-500/20 transition-colors">
+                                                <Activity size={48} className="text-cyan-400" />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-white mb-4">Correlation Graphs</h3>
+                                            <p className="text-gray-400">Visualize feature relationships and dependencies through interactive correlation heatmaps and plots.</p>
+                                        </div>
+                                    </GlassCard>
+                                </button>
+                            </div>
+                        </div>
+                    ) : activeTab === 'notebooks' ? (
+                        <div className="animate-fade-in w-full max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+                            {selectedNotebook ? (
+                                <GlassCard className="flex-1 flex flex-col overflow-hidden border-indigo-500/20 p-0">
+                                    <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                                        <h3 className="text-xl font-bold text-white">{selectedNotebook}</h3>
+                                        <button
+                                            onClick={() => setSelectedNotebook(null)}
+                                            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                                        >
+                                            Back to List
+                                        </button>
+                                    </div>
+                                    <iframe
+                                        src={`http://127.0.0.1:5000/api/analysis/notebooks/${selectedNotebook}`}
+                                        className="w-full flex-1 bg-white"
+                                        title="Notebook Viewer"
+                                    />
+                                </GlassCard>
+                            ) : (
+                                <GlassCard className="p-8 border-indigo-500/20">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <button
+                                            onClick={() => setActiveTab('analysis')}
+                                            className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
+                                        >
+                                            <ChevronDown className="rotate-90" size={20} />
+                                            <span>Back to Dashboard</span>
+                                        </button>
+                                        <h2 className="text-3xl font-bold text-white">Jupyter Notebooks</h2>
+                                        <div className="w-24"></div> {/* Spacer for centering */}
+                                    </div>
+                                    {notebooks.length === 0 ? (
+                                        <div className="text-center py-12 text-gray-400">
+                                            <FileText size={48} className="mx-auto mb-4 opacity-50" />
+                                            <p>No notebooks found in <code>backend/data/notebooks</code></p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {notebooks.map((nb, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    onClick={() => setSelectedNotebook(nb)}
+                                                    className="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group"
+                                                >
+                                                    <div className="flex items-center space-x-4 mb-4">
+                                                        <div className="p-3 rounded-lg bg-orange-500/20 text-orange-400">
+                                                            <FileText size={24} />
+                                                        </div>
+                                                        <h3 className="text-xl font-semibold text-white group-hover:text-indigo-400 transition-colors truncate" title={nb}>
+                                                            {nb.replace('.html', '').replace('.ipynb', '').replace(/_/g, ' ')}
+                                                        </h3>
+                                                    </div>
+                                                    <p className="text-sm text-gray-400 truncate">{nb}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </GlassCard>
+                            )}
+                        </div>
+                    ) : activeTab === 'correlations' ? (
+                        <div className="animate-fade-in w-full max-w-7xl mx-auto">
+                            <GlassCard className="p-8 border-indigo-500/20">
+                                <div className="flex items-center justify-between mb-6">
+                                    <button
+                                        onClick={() => setActiveTab('analysis')}
+                                        className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
+                                    >
+                                        <ChevronDown className="rotate-90" size={20} />
+                                        <span>Back to Dashboard</span>
+                                    </button>
+                                    <h2 className="text-3xl font-bold text-white">Feature Correlations</h2>
+                                    <div className="w-24"></div> {/* Spacer for centering */}
+                                </div>
+                                {plots.length === 0 ? (
+                                    <div className="text-center py-12 text-gray-400">
+                                        <Activity size={48} className="mx-auto mb-4 opacity-50" />
+                                        <p>No plots found in <code>backend/data/plots</code></p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {plots.map((plot, idx) => (
+                                            <div key={idx} className="rounded-xl overflow-hidden border border-white/10 bg-white/5">
+                                                <div className="p-4 border-b border-white/10 bg-white/5">
+                                                    <h3 className="font-semibold text-white truncate">{plot.replace('.png', '').replace(/_/g, ' ')}</h3>
+                                                </div>
+                                                <div
+                                                    className="aspect-video bg-black/40 flex items-center justify-center overflow-hidden group cursor-pointer relative"
+                                                    onClick={() => setSelectedPlot(plot)}
+                                                >
+                                                    <img
+                                                        src={`http://127.0.0.1:5000/api/analysis/plots/${plot}`}
+                                                        alt={plot}
+                                                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                                                        <span className="text-white font-bold px-4 py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm">View Full Screen</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </GlassCard>
+
+                            {/* Full Screen Plot Modal */}
+                            {selectedPlot && (
+                                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in" onClick={() => setSelectedPlot(null)}>
+                                    <div className="relative max-w-7xl max-h-[90vh] w-full flex flex-col items-center">
+                                        <button
+                                            className="absolute -top-12 right-0 text-white hover:text-red-400 transition-colors"
+                                            onClick={() => setSelectedPlot(null)}
+                                        >
+                                            <X size={32} />
+                                        </button>
+                                        <img
+                                            src={`http://127.0.0.1:5000/api/analysis/plots/${selectedPlot}`}
+                                            alt={selectedPlot}
+                                            className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                        <h3 className="mt-4 text-xl font-bold text-white">{selectedPlot.replace('.png', '').replace(/_/g, ' ')}</h3>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="animate-fade-in">
                             {diseases
                                 .filter((d) => d.id === activeTab)
                                 .map((disease) => {
+                                    if (disease.id === 'ai-tracker') {
+                                        return (
+                                            <div key={disease.id} className="w-full max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
+                                                <GlassCard className="flex-1 flex flex-col overflow-hidden border-indigo-500/20">
+                                                    {/* Chat Header */}
+                                                    <div className="p-4 border-b border-white/10 flex items-center space-x-4 bg-indigo-500/5">
+                                                        <div className="p-2 rounded-full bg-indigo-500/20">
+                                                            <Bot className="text-indigo-400" size={24} />
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-lg font-bold text-white">MedPredict AI Assistant</h3>
+                                                            <p className="text-xs text-indigo-300">Powered by Gemini Pro</p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Chat Messages */}
+                                                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                                        {chatMessages.map((msg, idx) => (
+                                                            <div key={idx} className={`flex items-start space-x-3 ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-emerald-500/20' : 'bg-indigo-500/20'}`}>
+                                                                    {msg.role === 'user' ? <UserIcon size={16} className="text-emerald-400" /> : <Bot size={16} className="text-indigo-400" />}
+                                                                </div>
+                                                                <div className={`p-4 max-w-[80%] text-sm ${msg.role === 'user' ? 'bg-emerald-500/10 rounded-2xl rounded-tr-none text-emerald-100' : 'bg-white/5 rounded-2xl rounded-tl-none text-gray-300'}`}>
+                                                                    {msg.image && (
+                                                                        <img src={msg.image} alt="Uploaded" className="max-w-full rounded-lg mb-2 border border-white/10" />
+                                                                    )}
+                                                                    {msg.text}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        {isChatLoading && (
+                                                            <div className="flex items-start space-x-3">
+                                                                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                                                                    <Bot size={16} className="text-indigo-400" />
+                                                                </div>
+                                                                <div className="bg-white/5 rounded-2xl rounded-tl-none p-4 text-sm text-gray-300 flex items-center space-x-2">
+                                                                    <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></span>
+                                                                    <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                                                    <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <div ref={chatEndRef} />
+                                                    </div>
+
+                                                    {/* Input Area */}
+                                                    <div className="p-4 border-t border-white/10 bg-black/20">
+                                                        {chatImage && (
+                                                            <div className="mb-2 relative inline-block">
+                                                                <img src={chatImage} alt="Preview" className="h-16 w-16 object-cover rounded-lg border border-white/20" />
+                                                                <button
+                                                                    onClick={() => setChatImage(null)}
+                                                                    className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-0.5 hover:bg-rose-600"
+                                                                >
+                                                                    <X size={12} />
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                        <form className="flex space-x-2" onSubmit={handleChatSubmit}>
+                                                            <input
+                                                                type="file"
+                                                                ref={fileInputRef}
+                                                                className="hidden"
+                                                                accept="image/*"
+                                                                onChange={(e) => {
+                                                                    const file = e.target.files[0];
+                                                                    if (file) {
+                                                                        const reader = new FileReader();
+                                                                        reader.onloadend = () => {
+                                                                            setChatImage(reader.result);
+                                                                        };
+                                                                        reader.readAsDataURL(file);
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => fileInputRef.current?.click()}
+                                                                className="p-3 rounded-xl bg-white/5 text-indigo-400 hover:bg-white/10 transition-colors border border-white/5"
+                                                                title="Upload Image"
+                                                            >
+                                                                <ImageIcon size={20} />
+                                                            </button>
+                                                            <input
+                                                                type="text"
+                                                                value={chatInput}
+                                                                onChange={(e) => setChatInput(e.target.value)}
+                                                                placeholder="Type your symptoms here..."
+                                                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all"
+                                                                disabled={isChatLoading}
+                                                            />
+                                                            <button
+                                                                type="submit"
+                                                                disabled={isChatLoading || (!chatInput.trim() && !chatImage)}
+                                                                className={`p-3 rounded-xl transition-all duration-300 flex items-center justify-center ${!chatInput.trim() && !chatImage
+                                                                    ? 'bg-white/5 text-gray-500 cursor-not-allowed'
+                                                                    : 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                                                                    }`}
+                                                            >
+                                                                <Send size={20} />
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </GlassCard>
+                                            </div>
+                                        );
+                                    }
+
+
+
                                     const metrics = accuracyScores[disease.id] || { accuracy: '92%', best_model: 'Random Forest' };
 
                                     const InputSection = (

@@ -1,10 +1,16 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
 from backend.routers.diabetes_route import diabetes_bp
 from backend.routers.heart_route import heart_bp
 from backend.routers.kidney_route import kidney_bp
 from backend.routers.liver_route import liver_bp
-from backend.routers.lung_route import lung_bp
+from backend.routers.ai_tracker_route import ai_tracker_bp
 from backend.routers.stroke_route import stroke_bp
 from backend.utils.load_model import load_model
 
@@ -16,8 +22,10 @@ app.register_blueprint(diabetes_bp, url_prefix='/api')
 app.register_blueprint(heart_bp, url_prefix='/api')
 app.register_blueprint(kidney_bp, url_prefix='/api')
 app.register_blueprint(liver_bp, url_prefix='/api')
-app.register_blueprint(lung_bp, url_prefix='/api')
+app.register_blueprint(ai_tracker_bp, url_prefix='/api')
 app.register_blueprint(stroke_bp, url_prefix='/api')
+from backend.routers.analysis_route import analysis_bp
+app.register_blueprint(analysis_bp, url_prefix='/api')
 
 @app.route('/api/status', methods=['GET'])
 def status():

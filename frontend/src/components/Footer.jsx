@@ -22,7 +22,7 @@ const Footer = ({ darkMode }) => {
                     {/* Social Icons */}
                     <div className="flex gap-4">
                         {[
-                            { Icon: Github, href: 'https://github.com/mohitmishra45/MediPredict-AI' },
+                            { Icon: Github, href: 'https://github.com/mohitmishra45' },
                             { Icon: Linkedin, href: 'https://www.linkedin.com/in/mohitmishra45/' },
                             { Icon: Mail, href: 'mailto:mohitmishra9707@gmail.com' }
                         ].map(({ Icon, href }, i) => (
@@ -43,7 +43,7 @@ const Footer = ({ darkMode }) => {
                 <div className="mt-8 text-center text-xs opacity-60 flex items-center justify-center gap-1">
                     <span>Made with</span>
                     <Heart size={16} className="text-rose-500 fill-rose-500 animate-pulse" />
-                    <span>for better healthcare</span>
+                    <span>Mohit Mishra</span>
                 </div>
             </div>
         </footer>
