@@ -8,3 +8,4 @@ gunicorn
 google-generativeai
 seaborn
 matplotlib
+python-dotenv
