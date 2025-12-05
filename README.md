@@ -1,7 +1,7 @@
 # MedPredict AI 🏥
 
-![MedPredict AI Banner](https://via.placeholder.com/1200x400?text=MedPredict+AI+Dashboard)
-*(Replace this link with an actual screenshot of your dashboard)*
+<img width="1919" height="928" alt="image" src="https://github.com/user-attachments/assets/7a47d084-2a91-49d7-8fdb-183f5fdb3774" />
+
 
 **MedPredict AI** is an advanced machine learning platform designed to assist healthcare professionals and individuals in early disease detection and risk assessment. Leveraging state-of-the-art algorithms, it provides accurate, instant, and accessible risk assessments for multiple critical health conditions.
 
@@ -60,12 +60,16 @@ MedPredict AI utilizes a variety of robust algorithms tailored to each specific 
 | Dashboard Home | Disease Prediction Form |
 |:---:|:---:|
 | ![Home](https://via.placeholder.com/600x400?text=Dashboard+Home) | ![Form](https://via.placeholder.com/600x400?text=Prediction+Form) |
-| *(Upload `dashboard_home.png`)* | *(Upload `prediction_form.png`)* |
+| <img width="1919" height="928" alt="image" src="https://github.com/user-attachments/assets/1a57b204-a260-4ae3-8d0b-e5401c614ba6" />
+| <img width="1919" height="929" alt="image" src="https://github.com/user-attachments/assets/3956706c-c089-418f-ab0a-dbc1ba6bd686" />
+|
 
 | Dark Mode | About Section |
 |:---:|:---:|
 | ![Dark Mode](https://via.placeholder.com/600x400?text=Dark+Mode) | ![About](https://via.placeholder.com/600x400?text=About+Section) |
-| *(Upload `dark_mode.png`)* | *(Upload `about_section.png`)* |
+|<img width="1919" height="929" alt="image" src="https://github.com/user-attachments/assets/81ddde44-30a1-40df-8613-0852cc41ecac" />
+| <img width="1918" height="929" alt="image" src="https://github.com/user-attachments/assets/097cf0fe-ef62-4e31-947b-012638c5dc19" />
+|
 
 ## ⚙️ Installation & Setup
 
