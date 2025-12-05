@@ -30,7 +30,10 @@ import {
     Image as ImageIcon,
     BarChart2,
     ChevronDown,
-    FileText
+    FileText,
+    BookOpen,
+    Dna,
+    FileCode
 } from 'lucide-react';
 import Logo3D from './Logo3D';
 import ParticleBackground from './ParticleBackground';
@@ -44,6 +47,7 @@ import ProgressBar from './ProgressBar';
 import Skeleton from './Skeleton';
 import NeonTitle from './NeonTitle';
 import Tooltip from './Tooltip';
+import NotebookViewer from './NotebookViewer';
 
 // Import 3D Images
 import heart3d from '../assets/heart-3d.png';
@@ -98,6 +102,9 @@ const MedicalDashboard = () => {
     const [isChatLoading, setIsChatLoading] = useState(false);
     const chatEndRef = React.useRef(null);
     const fileInputRef = React.useRef(null);
+
+    // Form State for Controlled Inputs
+    const [formValues, setFormValues] = useState({});
 
     const [notebooks, setNotebooks] = useState([]);
     const [plots, setPlots] = useState([]);
@@ -231,6 +238,83 @@ const MedicalDashboard = () => {
 
     }, [themeColor]);
 
+
+
+    const handleInputChange = (diseaseId, field, value) => {
+        setFormValues(prev => ({
+            ...prev,
+            [diseaseId]: {
+                ...prev[diseaseId],
+                [field]: value
+            }
+        }));
+    };
+
+    const fillRandomValues = (diseaseId) => {
+        const disease = diseases.find(d => d.id === diseaseId);
+        if (!disease || !disease.profiles) return;
+
+        // 1. Randomly select a profile (Healthy or At Risk)
+        const profileType = Math.random() > 0.5 ? 'healthy' : 'risk';
+        const profile = disease.profiles[profileType];
+
+        console.log(`Generating ${profileType} sample for ${disease.name}`);
+
+        const randomValues = {};
+
+        disease.fields.forEach(field => {
+            let baseValue = profile[field.name];
+
+            // If the profile doesn't define this field, fallback to random min/max
+            if (baseValue === undefined) {
+                if (field.type === 'number') {
+                    const min = field.min !== undefined ? field.min : 0;
+                    const max = field.max !== undefined ? field.max : 100;
+                    baseValue = (min + max) / 2; // Midpoint as fallback
+                } else {
+                    return; // Skip text fields if not in profile
+                }
+            }
+
+            if (field.type === 'number') {
+                // Add some randomness (jitter) to the base value
+                // +/- 10% variation or based on step
+                const variation = (field.max - field.min) * 0.05; // 5% of range
+                const minVal = Math.max(field.min, baseValue - variation);
+                const maxVal = Math.min(field.max, baseValue + variation);
+
+                const step = field.step || 1;
+                const precision = step.toString().split('.')[1]?.length || 0;
+
+                const rawVal = Math.random() * (maxVal - minVal) + minVal;
+                let val = parseFloat(rawVal.toFixed(precision));
+
+                // Special handling for Stroke Age: Integers for adults, decimals for children
+                if (diseaseId === 'stroke' && field.name === 'age' && val >= 1) {
+                    val = Math.round(val);
+                }
+
+                randomValues[field.name] = val;
+            } else {
+                // For text, just use the profile value directly
+                randomValues[field.name] = baseValue;
+            }
+        });
+
+        setFormValues(prev => ({
+            ...prev,
+            [diseaseId]: randomValues
+        }));
+    };
+
+    const openNotebook = (notebookName) => {
+        if (!notebookName) return;
+        setActiveTab('notebooks');
+        // Ensure it has .ipynb extension if not present (though we will set it fully)
+        const fullPath = notebookName.endsWith('.ipynb') ? notebookName : `${notebookName}.ipynb`;
+        setSelectedNotebook(fullPath);
+    };
+
     // Disease configurations
     const diseases = [
         {
@@ -251,7 +335,12 @@ const MedicalDashboard = () => {
                 { name: 'trestbps', label: 'Resting Blood Pressure', type: 'number', min: 94, max: 200 },
                 { name: 'chol', label: 'Cholesterol (mg/dl)', type: 'number', min: 126, max: 564 },
                 { name: 'thalach', label: 'Max Heart Rate', type: 'number', min: 71, max: 202 },
-            ]
+            ],
+            notebook: 'heart_disease.ipynb',
+            profiles: {
+                healthy: { age: 45, sex: 1, cp: 1, trestbps: 120, chol: 200, thalach: 160 },
+                risk: { age: 60, sex: 1, cp: 4, trestbps: 160, chol: 300, thalach: 110 }
+            }
         },
         {
             id: 'diabetes',
@@ -271,7 +360,12 @@ const MedicalDashboard = () => {
                 { name: 'age', label: 'Age', type: 'number', min: 21, max: 81 },
                 { name: 'insulin', label: 'Insulin Level', type: 'number', min: 0, max: 846 },
                 { name: 'pregnancies', label: 'Pregnancies', type: 'number', min: 0, max: 17 },
-            ]
+            ],
+            notebook: 'diabetese.ipynb',
+            profiles: {
+                healthy: { glucose: 90, bloodPressure: 70, bmi: 22, age: 30, insulin: 80, pregnancies: 1 },
+                risk: { glucose: 160, bloodPressure: 90, bmi: 35, age: 55, insulin: 200, pregnancies: 3 }
+            }
         },
         {
             id: 'stroke',
@@ -285,13 +379,18 @@ const MedicalDashboard = () => {
             gradient: 'from-violet-500 to-purple-600',
             description: 'Cerebrovascular risk evaluation',
             fields: [
-                { name: 'age', label: 'Age', type: 'number', min: 0, max: 82 },
+                { name: 'age', label: 'Age', type: 'number', min: 0.08, max: 82, step: 0.01 },
                 { name: 'hypertension', label: 'Hypertension (1=Yes, 0=No)', type: 'number', min: 0, max: 1 },
                 { name: 'heartDisease', label: 'Heart Disease (1=Yes, 0=No)', type: 'number', min: 0, max: 1 },
-                { name: 'avgGlucoseLevel', label: 'Avg Glucose Level', type: 'number', min: 55, max: 272 },
-                { name: 'bmi', label: 'BMI', type: 'number', min: 10, max: 98, step: 0.1 },
+                { name: 'avgGlucoseLevel', label: 'Avg Glucose Level', type: 'number', min: 55, max: 272, step: 0.01 },
+                { name: 'bmi', label: 'BMI', type: 'number', min: 10.3, max: 97.6, step: 0.1 },
                 { name: 'smokingStatus', label: 'Smoking Status (formerly smoked, never smoked, smokes, Unknown)', type: 'text' },
-            ]
+            ],
+            notebook: 'stroke_prediction_model.ipynb',
+            profiles: {
+                healthy: { age: 40, hypertension: 0, heartDisease: 0, avgGlucoseLevel: 85, bmi: 23, smokingStatus: 'never smoked' },
+                risk: { age: 70, hypertension: 1, heartDisease: 1, avgGlucoseLevel: 200, bmi: 32, smokingStatus: 'smokes' }
+            }
         },
         {
             id: 'liver',
@@ -310,7 +409,12 @@ const MedicalDashboard = () => {
                 { name: 'totalBilirubin', label: 'Total Bilirubin', type: 'number', min: 0.4, max: 75, step: 0.1 },
                 { name: 'directBilirubin', label: 'Direct Bilirubin', type: 'number', min: 0.1, max: 19.7, step: 0.1 },
                 { name: 'sgot', label: 'SGOT (AST)', type: 'number', min: 10, max: 4929 },
-            ]
+            ],
+            notebook: 'liver_disease.ipynb',
+            profiles: {
+                healthy: { age: 35, gender: 'Female', totalBilirubin: 0.8, directBilirubin: 0.2, sgot: 25 },
+                risk: { age: 55, gender: 'Male', totalBilirubin: 5.0, directBilirubin: 2.5, sgot: 150 }
+            }
         },
         {
             id: 'kidney',
@@ -331,7 +435,12 @@ const MedicalDashboard = () => {
                 { name: 'specificGravity', label: 'Specific Gravity', type: 'number', min: 1.005, max: 1.025, step: 0.001 },
                 { name: 'bloodUrea', label: 'Blood Urea', type: 'number', min: 1.5, max: 391, step: 0.1 },
                 { name: 'hypertension', label: 'Hypertension (yes/no)', type: 'text' },
-            ]
+            ],
+            notebook: 'Kidney_disease.ipynb',
+            profiles: {
+                healthy: { age: 40, serumCreatinine: 0.8, hemoglobin: 15, albumin: 0, specificGravity: 1.020, bloodUrea: 30, hypertension: 'no' },
+                risk: { age: 65, serumCreatinine: 4.5, hemoglobin: 9, albumin: 3, specificGravity: 1.010, bloodUrea: 100, hypertension: 'yes' }
+            }
         },
         {
             id: 'ai-tracker',
@@ -350,11 +459,13 @@ const MedicalDashboard = () => {
 
     const handleSubmit = async (diseaseId, e) => {
         e.preventDefault();
-        const data = {};
-        const inputs = e.target.querySelectorAll('input');
-        inputs.forEach(input => {
-            data[input.name] = input.value;
-        });
+
+        // Use state values instead of querying DOM
+        const data = formValues[diseaseId];
+        if (!data || Object.keys(data).length === 0) {
+            alert("Please fill in the fields");
+            return;
+        }
 
         setIsAnalyzing(true);
         setPredictions({ ...predictions, [diseaseId]: null }); // Clear previous prediction
@@ -580,10 +691,9 @@ const MedicalDashboard = () => {
                     </div>
                 )}
 
-            </header >
+            </header>
 
-            {/* Mobile Menu Overlay */}
-            < div className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}>
+            <div className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsSidebarOpen(false)}>
                 <div className={`absolute right-0 top-0 h-full w-80 glass-panel border-l border-white/10 p-6 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col space-y-6 mt-20">
                         {diseases.map((d) => (
@@ -611,14 +721,13 @@ const MedicalDashboard = () => {
                         </button>
                     </div>
                 </div>
-            </div >
+            </div>
 
 
-            {/* Main Content Area */}
-            < main className={`flex-1 min-h-screen transition-all duration-300 pt-24`}>
+            <main className={`flex-1 min-h-screen transition-all duration-300 pt-24`}>
                 {/* Mobile Header Removed as it's replaced by the global Top Header */}
 
-                < div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl" >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     {activeTab === 'home' ? (
                         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-6rem)] py-12 animate-fade-in">
                             {/* Hero Section */}
@@ -845,22 +954,11 @@ const MedicalDashboard = () => {
                     ) : activeTab === 'notebooks' ? (
                         <div className="animate-fade-in w-full max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
                             {selectedNotebook ? (
-                                <GlassCard className="flex-1 flex flex-col overflow-hidden border-[var(--color-primary)]/20 p-0">
-                                    <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
-                                        <h3 className="text-xl font-bold text-white">{selectedNotebook}</h3>
-                                        <button
-                                            onClick={() => setSelectedNotebook(null)}
-                                            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                                        >
-                                            Back to List
-                                        </button>
-                                    </div>
-                                    <iframe
-                                        src={`${apiUrl}/api/analysis/notebooks/${selectedNotebook}`}
-                                        className="w-full flex-1 bg-white"
-                                        title="Notebook Viewer"
-                                    />
-                                </GlassCard>
+                                <NotebookViewer
+                                    notebookPath={selectedNotebook}
+                                    activeTab={activeTab}
+                                    onClose={() => setSelectedNotebook(null)}
+                                />
                             ) : (
                                 <GlassCard className="p-8 border-[var(--color-primary)]/20">
                                     <div className="flex items-center justify-between mb-6">
@@ -1103,24 +1201,47 @@ const MedicalDashboard = () => {
                                                                 max={field.max}
                                                                 step={field.step || 1}
                                                                 required
+                                                                value={formValues[disease.id]?.[field.name] ?? ''}
+                                                                onChange={(e) => handleInputChange(disease.id, field.name, e.target.value)}
                                                                 className={darkMode ? 'bg-black/40 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}
                                                             />
                                                         </div>
                                                     ))}
                                                 </div>
 
-                                                <div className="pt-6">
+                                                <div className="grid grid-cols-2 gap-4">
                                                     <Button
-                                                        type="submit"
+                                                        type="button"
                                                         size="lg"
-                                                        loading={isAnalyzing}
-                                                        disabled={isAnalyzing}
-                                                        icon={Activity}
-                                                        className="w-full py-4 text-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-light)] hover:to-[var(--color-primary)] border-0 text-black font-bold shadow-[0_0_20px_var(--glow-subtle)] hover:shadow-[0_0_30px_var(--glow-primary)]"
+                                                        variant="outline"
+                                                        onClick={() => fillRandomValues(disease.id)}
+                                                        icon={Dna}
+                                                        className={`py-4 text-lg border-[var(--color-primary)]/40 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10`}
                                                     >
-                                                        {isAnalyzing ? 'Processing...' : 'Analyze Risk Factors'}
+                                                        Sample Data
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        size="lg"
+                                                        variant="outline"
+                                                        onClick={() => openNotebook(disease.notebook)}
+                                                        icon={FileCode}
+                                                        className={`py-4 text-lg border-blue-500/40 text-blue-400 hover:bg-blue-500/10`}
+                                                    >
+                                                        View Notebook
                                                     </Button>
                                                 </div>
+
+                                                <Button
+                                                    type="submit"
+                                                    size="lg"
+                                                    loading={isAnalyzing}
+                                                    disabled={isAnalyzing}
+                                                    icon={Activity}
+                                                    className="w-full py-4 text-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-light)] hover:to-[var(--color-primary)] border-0 text-black font-bold shadow-[0_0_20px_var(--glow-subtle)] hover:shadow-[0_0_30px_var(--glow-primary)]"
+                                                >
+                                                    {isAnalyzing ? 'Processing...' : 'Analyze Risk Factors'}
+                                                </Button>
                                             </form>
                                         </div>
                                     );

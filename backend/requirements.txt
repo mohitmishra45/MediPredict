@@ -9,3 +9,4 @@ google-genai
 seaborn
 matplotlib
 python-dotenv
+imbalanced-learn

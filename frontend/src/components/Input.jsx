@@ -18,12 +18,13 @@ const Input = React.forwardRef(({
     onChange,
     ...props
 }, ref) => {
-    const [localValue, setLocalValue] = useState(value || '');
+    const [localValue, setLocalValue] = useState(value !== undefined && value !== null ? value : '');
     const [isFocused, setIsFocused] = useState(false);
     const id = useId();
 
     const currentValue = value !== undefined ? value : localValue;
-    const hasValue = currentValue && currentValue.length > 0;
+    // Fix: Convert to string to check length for numbers
+    const hasValue = currentValue !== undefined && currentValue !== null && String(currentValue).length > 0;
 
     const handleChange = (e) => {
         const newValue = e.target.value;

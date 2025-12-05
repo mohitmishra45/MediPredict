@@ -145,7 +145,6 @@ def train_lung():
             'model': model,
             'scaler': scaler,
             'encoders': {'Gender': le_gender, 'Level': le_level},
-            'accuracy': accuracy,
             'all_accuracies': all_accuracies
         }, os.path.join(MODEL_DIR, 'lung_model.pkl'))
         print("Lung Cancer model saved.")
@@ -155,7 +154,7 @@ def train_lung():
 def train_stroke():
     print("\n--- Training Stroke Model ---")
     try:
-        df = pd.read_csv(os.path.join(DATA_DIR, 'stroke.csv'))
+        df = pd.read_csv(os.path.join(DATA_DIR, 'healthcare-dataset-stroke-data (1).csv'))
         
         le_smoking = LabelEncoder()
         df['smoking_status'] = df['smoking_status'].astype(str)
@@ -173,6 +172,15 @@ def train_stroke():
         X = X.astype(float)
         
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # Balance the training set
+        print(f"  Original Training counts: {y_train.value_counts().to_dict()}")
+        
+        from imblearn.over_sampling import SMOTE
+        smote = SMOTE(random_state=42)
+        X_train, y_train = smote.fit_resample(X_train, y_train)
+        
+        print(f"  Balanced Training counts: {y_train.value_counts().to_dict()}")
         
         scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train)
