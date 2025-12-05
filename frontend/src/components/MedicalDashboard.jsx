@@ -550,31 +550,34 @@ const MedicalDashboard = () => {
 
                 {/* Mobile Navigation Menu */}
                 {isMobileMenuOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 mx-4 p-4 glass-panel rounded-2xl border border-white/10 shadow-xl flex flex-col space-y-2 lg:hidden animate-fade-in z-50">
-                        {diseases.map((d) => (
+                    <div className="absolute top-full left-0 right-0 mt-2 mx-4 p-4 glass-panel rounded-2xl border border-white/10 shadow-xl lg:hidden animate-fade-in z-50">
+                        <div className="grid grid-cols-4 gap-4">
+                            {diseases.map((d) => (
+                                <button
+                                    key={d.id}
+                                    onClick={() => {
+                                        setActiveTab(d.id);
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 ${activeTab === d.id ? 'bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 shadow-[0_0_10px_var(--glow-subtle)]' : 'hover:bg-white/5'}`}
+                                    title={d.name}
+                                >
+                                    <img src={d.image} alt={d.name} className="w-10 h-10 rounded-full object-cover mb-1" />
+                                    {/* <span className="text-xs text-center mt-1">{d.shortName}</span> */}
+                                </button>
+                            ))}
                             <button
-                                key={d.id}
                                 onClick={() => {
-                                    setActiveTab(d.id);
+                                    setActiveTab('about');
                                     setIsMobileMenuOpen(false);
                                 }}
-                                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${activeTab === d.id ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' : 'text-slate-300 hover:bg-white/5'}`}
+                                className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 ${activeTab === 'about' ? 'bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 shadow-[0_0_10px_var(--glow-subtle)]' : 'hover:bg-white/5'}`}
+                                title="About Us"
                             >
-                                <img src={d.image} alt={d.name} className="w-8 h-8 rounded-full object-cover" />
-                                <span>{d.name}</span>
+                                <Info size={40} className="p-1" />
+                                {/* <span className="text-xs text-center mt-1">About</span> */}
                             </button>
-                        ))}
-                        <div className="h-px bg-white/10 my-2"></div>
-                        <button
-                            onClick={() => {
-                                setActiveTab('about');
-                                setIsMobileMenuOpen(false);
-                            }}
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${activeTab === 'about' ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' : 'text-slate-300 hover:bg-white/5'}`}
-                        >
-                            <Info size={20} />
-                            <span>About Us</span>
-                        </button>
+                        </div>
                     </div>
                 )}
 
@@ -801,19 +804,19 @@ const MedicalDashboard = () => {
                         </div>
                     ) : activeTab === 'analysis' ? (
                         <div className="animate-fade-in w-full max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
-                            <h2 className="text-4xl font-bold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Data Analysis Hub</h2>
+                            <h2 className="text-4xl font-bold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)]">Data Analysis Hub</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
                                 <button
                                     onClick={() => setActiveTab('notebooks')}
                                     className="w-full text-left focus:outline-none"
                                 >
                                     <GlassCard
-                                        className="h-full p-8 border-indigo-500/20 hover:border-indigo-500/50 cursor-pointer group transition-all duration-300 hover:scale-105"
+                                        className="h-full p-8 border-[var(--color-primary)]/20 hover:border-[var(--color-primary)]/50 cursor-pointer group transition-all duration-300 hover:scale-105"
                                         hoverEffect={true}
                                     >
                                         <div className="flex flex-col items-center text-center">
-                                            <div className="p-6 rounded-full bg-indigo-500/10 mb-6 group-hover:bg-indigo-500/20 transition-colors">
-                                                <FileText size={48} className="text-indigo-400" />
+                                            <div className="p-6 rounded-full bg-[var(--color-primary)]/10 mb-6 group-hover:bg-[var(--color-primary)]/20 transition-colors">
+                                                <FileText size={48} className="text-[var(--color-primary)]" />
                                             </div>
                                             <h3 className="text-2xl font-bold text-white mb-4">Jupyter Notebooks</h3>
                                             <p className="text-gray-400">Explore detailed data analysis, model training logs, and performance metrics directly from your notebooks.</p>
@@ -826,12 +829,12 @@ const MedicalDashboard = () => {
                                     className="w-full text-left focus:outline-none"
                                 >
                                     <GlassCard
-                                        className="h-full p-8 border-cyan-500/20 hover:border-cyan-500/50 cursor-pointer group transition-all duration-300 hover:scale-105"
+                                        className="h-full p-8 border-[var(--color-primary)]/20 hover:border-[var(--color-primary)]/50 cursor-pointer group transition-all duration-300 hover:scale-105"
                                         hoverEffect={true}
                                     >
                                         <div className="flex flex-col items-center text-center">
-                                            <div className="p-6 rounded-full bg-cyan-500/10 mb-6 group-hover:bg-cyan-500/20 transition-colors">
-                                                <Activity size={48} className="text-cyan-400" />
+                                            <div className="p-6 rounded-full bg-[var(--color-primary)]/10 mb-6 group-hover:bg-[var(--color-primary)]/20 transition-colors">
+                                                <Activity size={48} className="text-[var(--color-primary)]" />
                                             </div>
                                             <h3 className="text-2xl font-bold text-white mb-4">Correlation Graphs</h3>
                                             <p className="text-gray-400">Visualize feature relationships and dependencies through interactive correlation heatmaps and plots.</p>
@@ -843,7 +846,7 @@ const MedicalDashboard = () => {
                     ) : activeTab === 'notebooks' ? (
                         <div className="animate-fade-in w-full max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
                             {selectedNotebook ? (
-                                <GlassCard className="flex-1 flex flex-col overflow-hidden border-indigo-500/20 p-0">
+                                <GlassCard className="flex-1 flex flex-col overflow-hidden border-[var(--color-primary)]/20 p-0">
                                     <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
                                         <h3 className="text-xl font-bold text-white">{selectedNotebook}</h3>
                                         <button
@@ -860,7 +863,7 @@ const MedicalDashboard = () => {
                                     />
                                 </GlassCard>
                             ) : (
-                                <GlassCard className="p-8 border-indigo-500/20">
+                                <GlassCard className="p-8 border-[var(--color-primary)]/20">
                                     <div className="flex items-center justify-between mb-6">
                                         <button
                                             onClick={() => setActiveTab('analysis')}
@@ -883,13 +886,13 @@ const MedicalDashboard = () => {
                                                 <div
                                                     key={idx}
                                                     onClick={() => setSelectedNotebook(nb)}
-                                                    className="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group"
+                                                    className="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--color-primary)]/50 transition-all cursor-pointer group"
                                                 >
                                                     <div className="flex items-center space-x-4 mb-4">
-                                                        <div className="p-3 rounded-lg bg-orange-500/20 text-orange-400">
+                                                        <div className="p-3 rounded-lg bg-[var(--color-primary)]/20 text-[var(--color-primary)]">
                                                             <FileText size={24} />
                                                         </div>
-                                                        <h3 className="text-xl font-semibold text-white group-hover:text-indigo-400 transition-colors truncate" title={nb}>
+                                                        <h3 className="text-xl font-semibold text-white group-hover:text-[var(--color-primary)] transition-colors truncate" title={nb}>
                                                             {nb.replace('.html', '').replace('.ipynb', '').replace(/_/g, ' ')}
                                                         </h3>
                                                     </div>
@@ -903,7 +906,7 @@ const MedicalDashboard = () => {
                         </div>
                     ) : activeTab === 'correlations' ? (
                         <div className="animate-fade-in w-full max-w-7xl mx-auto">
-                            <GlassCard className="p-8 border-indigo-500/20">
+                            <GlassCard className="p-8 border-[var(--color-primary)]/20">
                                 <div className="flex items-center justify-between mb-6">
                                     <button
                                         onClick={() => setActiveTab('analysis')}
