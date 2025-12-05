@@ -5,7 +5,7 @@ numpy
 scikit-learn
 joblib
 gunicorn
-google-generativeai
+google-genai
 seaborn
 matplotlib
 python-dotenv
