@@ -112,13 +112,14 @@ const MedicalDashboard = () => {
     }, [chatMessages, activeTab]);
 
     useEffect(() => {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
         if (activeTab === 'notebooks') {
-            fetch('http://127.0.0.1:5000/api/analysis/notebooks')
+            fetch(`${apiUrl}/api/analysis/notebooks`)
                 .then(res => res.json())
                 .then(data => setNotebooks(data))
                 .catch(err => console.error(err));
         } else if (activeTab === 'correlations') {
-            fetch('http://127.0.0.1:5000/api/analysis/plots')
+            fetch(`${apiUrl}/api/analysis/plots`)
                 .then(res => res.json())
                 .then(data => setPlots(data))
                 .catch(err => console.error(err));
