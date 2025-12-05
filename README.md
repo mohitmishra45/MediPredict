@@ -1,83 +1,91 @@
 # MedPredict AI 🏥
 
-<img width="1919" height="928" alt="image" src="https://github.com/user-attachments/assets/7a47d084-2a91-49d7-8fdb-183f5fdb3774" />
+<img width="1919" height="928" alt="MedPredict AI Banner" src="https://github.com/user-attachments/assets/7a47d084-2a91-49d7-8fdb-183f5fdb3774" />
 
+> *Advanced Disease Prediction & Health Analytics Platform*
 
-**MedPredict AI** is an advanced machine learning platform designed to assist healthcare professionals and individuals in early disease detection and risk assessment. Leveraging state-of-the-art algorithms, it provides accurate, instant, and accessible risk assessments for multiple critical health conditions.
+**MedPredict AI** is a cutting-edge health analytics application that leverages machine learning to predict the risk of multiple life-threatening diseases. Designed with a focus on usability and accuracy, it provides users with instant, data-driven health insights through a beautiful, modern interface.
+
+---
 
 ## 🚀 Key Features
 
-*   **Multi-Disease Prediction**: Comprehensive analysis for:
-    *   ❤️ Heart Disease
-    *   🩸 Diabetes
-    *   🧠 Stroke
-    *   🫁 Lung Cancer
-    *   🩺 Kidney Disease
-    *   👤 Liver Disease
-*   **High Accuracy**: Powered by machine learning models trained on validated clinical datasets.
-*   **Modern UI/UX**:
-    *   ✨ **Glassmorphism Design**: Sleek, modern interface with glass-like cards and panels.
-    *   🌗 **Dark/Light Mode**: Fully responsive theme switching for comfortable viewing in any environment.
-    *   🎨 **Customizable Themes**: Multiple color accents (Green, Blue, Purple, Pink, etc.).
-    *   🧊 **3D Visuals**: Custom CSS-based 3D logo and interactive elements.
-    *   ✨ **Particle Background**: Subtle, dynamic background effects.
-*   **Instant Results**: Real-time processing and risk probability scoring.
-*   **Secure & Private**: Client-side data handling focus (disclaimer: demo purpose).
+### 🩺 Multi-Disease Prediction
+Comprehensive risk assessment for 6 critical conditions:
+*   ❤️ **Heart Disease**
+*   🩸 **Diabetes**
+*   🧠 **Stroke**
+*   🩺 **Kidney Disease**
+*   👤 **Liver Disease**
 
-## 🧠 Machine Learning Models
+### 🧠 Advanced AI/ML Core
+*   **High Accuracy Models**: Trained on validated clinical datasets (e.g., UCI Machine Learning Repository).
+*   **Real-time Analysis**: Instant processing of patient vitals to generate risk probability scores.
+*   **Data Visualization**: Integrated **Analysis Hub** featuring interactive notebooks and EDA (Exploratory Data Analysis) graphs for deep insights.
 
-MedPredict AI utilizes a variety of robust algorithms tailored to each specific disease dataset to ensure maximum accuracy.
+### ✨ Modern & Immersive UI/UX
+*   **Glassmorphism Design**: Premium aesthetic with translucent cards and neon accents.
+*   **3D Interactive Elements**: Custom 3D Logo and dynamic visual components.
+*   **Particle Background**: Smooth, animated background that reacts to user interaction.
+*   **Responsive Layout**: Optimized for Desktop, Tablet, and Mobile devices.
+*   **Theme Engine**: 
+    *   🌗 **Dark/Light Mode**: Seamless toggle for comfortable viewing.
+    *   🎨 **Custom Accents**: Personalize the dashboard with Blue, Green, Purple, or Pink themes.
 
-| Disease | Model Algorithm | Accuracy | Description |
-| :--- | :--- | :--- | :--- |
-| **Diabetes** | Logistic Regression | **78.57%** | Effective for binary classification based on glucose and insulin levels. |
-| **Heart Disease** | Gaussian Naive Bayes | **85.19%** | Probabilistic classifier suitable for medical diagnosis with independent features. |
-| **Kidney Disease** | K-Nearest Neighbors (KNN) | **97.50%** | Classifies based on similarity to known cases, highly effective for this dataset. |
-| **Liver Disease** | Decision Tree Classifier | **92.85%** | Uses a tree-like model of decisions to predict liver anomalies. |
-| **Lung Cancer** | Decision Tree Classifier | **100.00%** | High-precision model for detecting patterns in lung health data. |
-| **Stroke** | Logistic Regression | **93.93%** | Reliable statistical model for estimating stroke probability. |
+---
 
-*Note: Accuracies are based on the testing subset of the respective clinical datasets.*
+## 📸 Application Gallery
+
+### Dashboard & Navigation
+The central hub for accessing all prediction models and analytics tools.
+
+| Dashboard Home (Light) | Dashboard Home (Dark) |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/1a57b204-a260-4ae3-8d0b-e5401c614ba6" alt="Dashboard Home" width="600"/> | <img src="https://github.com/user-attachments/assets/81ddde44-30a1-40df-8613-0852cc41ecac" alt="Dashboard Dark" width="600"/> |
+| *Clean light mode for clarity* | *Sleek dark mode for night usage* |
+
+### Prediction Interface & Details
+Intuitive forms for entering patient health data and exploring specific sections.
+
+| Disease Prediction Form | About Section |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/3956706c-c089-418f-ab0a-dbc1ba6bd686" alt="Prediction Form" width="600"/> | <img src="https://github.com/user-attachments/assets/097cf0fe-ef62-4e31-947b-012638c5dc19" alt="About Section" width="600"/> |
+| *Easy-to-use input fields with validation* | *Detailed project/team information* |
+
+### Analysis Hub & Visualizations
+Explore the data behind the models with integrated Jupyter Notebook views.
+
+| EDA Graphs | Model Performance |
+| :---: | :---: |
+| ![EDA Graphs](https://via.placeholder.com/600x400?text=Exploratory+Data+Analysis) | ![Model Performance](https://via.placeholder.com/600x400?text=Model+Accuracy+Charts) |
+
+---
 
 ## 🛠️ Technology Stack
 
 ### Frontend
-*   **React.js**: Component-based UI architecture.
-*   **Vite**: Next-generation frontend tooling.
-*   **Tailwind CSS**: Utility-first CSS framework for styling.
-*   **Lucide React**: Beautiful, consistent icons.
-*   **CSS Modules/Variables**: Advanced theming and animations.
+*   **[React.js](https://reactjs.org/)**: Building the user interface.
+*   **[Vite](https://vitejs.dev/)**: Fast build tool and dev server.
+*   **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first styling.
+*   **[Framer Motion](https://www.framer.com/motion/)**: Smooth animations and transitions.
+*   **[Lucide React](https://lucide.dev/)**: Modern, clean iconography.
 
 ### Backend
-*   **Python**: Core programming language.
-*   **Flask**: Lightweight WSGI web application framework.
-*   **Scikit-Learn**: Machine learning library for model training and prediction.
-*   **Pandas/NumPy**: Data manipulation and analysis.
-*   **Joblib**: Model serialization.
+*   **[Python 3.8+](https://www.python.org/)**: Core logic and ML processing.
+*   **[Flask](https://flask.palletsprojects.com/)**: RESTful API to serve predictions.
+*   **[Scikit-Learn](https://scikit-learn.org/)**: Machine learning model implementation.
+*   **[Pandas](https://pandas.pydata.org/)** & **[NumPy](https://numpy.org/)**: Data handling.
+*   **Joblib**: Efficient model serialization.
 
-## 📸 Screenshots
-
-| Dashboard Home | Disease Prediction Form |
-|:---:|:---:|
-| ![Home](https://via.placeholder.com/600x400?text=Dashboard+Home) | ![Form](https://via.placeholder.com/600x400?text=Prediction+Form) |
-| <img width="1919" height="928" alt="image" src="https://github.com/user-attachments/assets/1a57b204-a260-4ae3-8d0b-e5401c614ba6" />
-| <img width="1919" height="929" alt="image" src="https://github.com/user-attachments/assets/3956706c-c089-418f-ab0a-dbc1ba6bd686" />
-|
-
-| Dark Mode | About Section |
-|:---:|:---:|
-| ![Dark Mode](https://via.placeholder.com/600x400?text=Dark+Mode) | ![About](https://via.placeholder.com/600x400?text=About+Section) |
-|<img width="1919" height="929" alt="image" src="https://github.com/user-attachments/assets/81ddde44-30a1-40df-8613-0852cc41ecac" />
-| <img width="1918" height="929" alt="image" src="https://github.com/user-attachments/assets/097cf0fe-ef62-4e31-947b-012638c5dc19" />
-|
+---
 
 ## ⚙️ Installation & Setup
 
-Follow these steps to set up the project locally.
+Get the project running on your local machine in minutes.
 
 ### Prerequisites
-*   Node.js (v16+)
-*   Python (v3.8+)
+*   Node.js (v16 or higher)
+*   Python (3.8 or higher)
 *   Git
 
 ### 1. Clone the Repository
@@ -86,65 +94,89 @@ git clone https://github.com/mohitmishra45/MediPredict-AI.git
 cd MediPredict-AI
 ```
 
-### 2. Backend Setup
-Navigate to the backend directory and install dependencies.
+### 2. Backend Configuration
+Set up the Python environment and start the API server.
 
 ```bash
-# Navigate to root directory (if not already there)
-# Create a virtual environment (optional but recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Navigate to backend folder (if you are in root)
+# It is recommended to create a virtual environment first:
+# python -m venv venv
+# source venv/bin/activate  (Mac/Linux)
+# venv\Scripts\activate     (Windows)
 
-# Install requirements
 pip install -r backend/requirements.txt
-
-# Run the Flask Server
 python backend/app.py
 ```
-*The backend server will start at `http://127.0.0.1:5000`*
+*Server will start at `http://127.0.0.1:5000`*
 
-### 3. Frontend Setup
-Open a new terminal, navigate to the frontend directory, and start the development server.
+### 3. Frontend Configuration
+Launch the React application.
 
 ```bash
+# Open a new terminal
 cd frontend
-
-# Install dependencies
 npm install
-
-# Run the development server
 npm run dev
 ```
-*The frontend will be available at `http://localhost:5173`*
+*Application will open at `http://localhost:5173`*
 
-## 🧠 How It Works
+---
 
-1.  **Select a Disease**: Choose the condition you want to assess from the dashboard.
-2.  **Input Health Data**: Enter the required patient vitals (e.g., Age, BMI, Blood Pressure).
-3.  **AI Analysis**: The data is sent to the Flask backend where the specific ML model processes it.
-4.  **Get Results**: Receive an instant risk assessment (Low/High Risk) with actionable insights.
+## 🔌 API Reference
+
+The backend provides REST endpoints for predictions. Example usage:
+
+### Predict Heart Disease
+`POST /api/predict/heart`
+
+**Request Body:**
+```json
+{
+  "age": 45,
+  "sex": 1,
+  "cp": 2,
+  "trestbps": 130,
+  "chol": 250,
+  "fbs": 0,
+  "restecg": 1,
+  "thalach": 160,
+  "exang": 0,
+  "oldpeak": 1.5,
+  "slope": 2,
+  "ca": 0,
+  "thal": 2
+}
+```
+
+**Response:**
+```json
+{
+  "prediction": "High Risk",
+  "probability": 0.85
+}
+```
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions!
+1.  **Fork** the repository.
+2.  Create a **Feature Branch** (`git checkout -b feature/NewFeature`).
+3.  **Commit** your changes (`git commit -m 'Add NewFeature'`).
+4.  **Push** to the branch (`git push origin feature/NewFeature`).
+5.  Open a **Pull Request**.
 
-1.  Fork the project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+---
 
 ## 📞 Contact
 
 **Mohit Mishra**
 
-*   🔗 LinkedIn: [mohitmishra45](https://www.linkedin.com/in/mohitmishra45/)
-*   📧 Email: [mohitmishra9707@gmail.com](mailto:mohitmishra9707@gmail.com)
-*   🐙 GitHub: [mohitmishra45](https://github.com/mohitmishra45)
+*   🔗 **LinkedIn**: [mohitmishra45](https://www.linkedin.com/in/mohitmishra45/)
+*   📧 **Email**: [mohitmishra9707@gmail.com](mailto:mohitmishra9707@gmail.com)
+*   🐙 **GitHub**: [mohitmishra45](https://github.com/mohitmishra45)
 
 ---
-*Disclaimer: MedPredict AI is a decision support tool and is NOT a substitute for professional medical diagnosis. Always consult a healthcare provider.*
+
+*Disclaimer: This tool is for educational and demonstrative purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.*
