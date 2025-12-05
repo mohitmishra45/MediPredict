@@ -57,6 +57,8 @@ import robot3d from '../assets/robot-3d.png';
 
 
 const MedicalDashboard = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+
     const [activeTab, setActiveTab] = useState(() => {
         if (typeof window !== 'undefined') {
             return window.location.hash.replace('#', '') || 'home';
@@ -112,7 +114,6 @@ const MedicalDashboard = () => {
     }, [chatMessages, activeTab]);
 
     useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
         if (activeTab === 'notebooks') {
             fetch(`${apiUrl}/api/analysis/notebooks`)
                 .then(res => res.json())
@@ -145,7 +146,6 @@ const MedicalDashboard = () => {
         setIsChatLoading(true);
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
             const response = await fetch(`${apiUrl}/api/ai-tracker/chat`, {
                 method: 'POST',
                 headers: {
@@ -173,7 +173,6 @@ const MedicalDashboard = () => {
     };
 
     useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
         fetch(`${apiUrl}/api/metrics`)
             .then(res => res.json())
             .then(data => setAccuracyScores(data))
@@ -363,7 +362,6 @@ const MedicalDashboard = () => {
         // Simulate analysis delay
         setTimeout(async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
                 const response = await fetch(`${apiUrl}/api/predict/${diseaseId}`, {
                     method: 'POST',
                     headers: {
@@ -858,7 +856,7 @@ const MedicalDashboard = () => {
                                         </button>
                                     </div>
                                     <iframe
-                                        src={`http://127.0.0.1:5000/api/analysis/notebooks/${selectedNotebook}`}
+                                        src={`${apiUrl}/api/analysis/notebooks/${selectedNotebook}`}
                                         className="w-full flex-1 bg-white"
                                         title="Notebook Viewer"
                                     />
@@ -936,7 +934,7 @@ const MedicalDashboard = () => {
                                                     onClick={() => setSelectedPlot(plot)}
                                                 >
                                                     <img
-                                                        src={`http://127.0.0.1:5000/api/analysis/plots/${plot}`}
+                                                        src={`${apiUrl}/api/analysis/plots/${plot}`}
                                                         alt={plot}
                                                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                                     />
@@ -961,7 +959,7 @@ const MedicalDashboard = () => {
                                             <X size={32} />
                                         </button>
                                         <img
-                                            src={`http://127.0.0.1:5000/api/analysis/plots/${selectedPlot}`}
+                                            src={`${apiUrl}/api/analysis/plots/${selectedPlot}`}
                                             alt={selectedPlot}
                                             className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10"
                                             onClick={(e) => e.stopPropagation()}
