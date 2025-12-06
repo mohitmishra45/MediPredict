@@ -55,7 +55,17 @@ def get_metrics():
             
     return jsonify(metrics)
 
+    
+    # Global Error Handlers
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Pass through HTTP errors
+    if hasattr(e, 'code'):
+        return jsonify({"error": str(e), "code": e.code}), e.code
+    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
+    # Disable debug mode in production context if desired, or keep as is for dev
     app.run(debug=True, port=port)

@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import toast from 'react-hot-toast';
 import Logo3D from './Logo3D';
 import ParticleBackground from './ParticleBackground';
 import Footer from './Footer';
@@ -91,7 +92,7 @@ const MedicalDashboard = () => {
     const [predictions, setPredictions] = useState({});
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
-    const [themeColor, setThemeColor] = useState('#f97316'); // Default Orange
+    const [themeColor, setThemeColor] = useState('#3b82f6'); // Default Blue
     const [showSettings, setShowSettings] = useState(false);
     const [accuracyScores, setAccuracyScores] = useState({});
 
@@ -187,7 +188,7 @@ const MedicalDashboard = () => {
             .then(data => setAccuracyScores(data))
             .catch(err => {
                 console.error("Failed to fetch metrics", err);
-                alert(`Failed to fetch metrics from ${apiUrl}. Error: ${err.message}`);
+                toast.error("Could not connect to backend server. Please ensure it is running.");
             });
     }, []);
 
@@ -234,9 +235,9 @@ const MedicalDashboard = () => {
         };
 
         const rgb = hexToRgb(themeColor);
-        root.style.setProperty('--glow-primary', `0 0 10px rgba(${rgb}, 0.3), 0 0 20px rgba(${rgb}, 0.15)`);
-        root.style.setProperty('--glow-primary-strong', `0 0 15px rgba(${rgb}, 0.4), 0 0 30px rgba(${rgb}, 0.2)`);
-        root.style.setProperty('--glow-subtle', `0 0 5px rgba(${rgb}, 0.15)`);
+        root.style.setProperty('--glow-primary', `0 0 10px rgba(${rgb}, 0.2), 0 0 20px rgba(${rgb}, 0.1)`);
+        root.style.setProperty('--glow-primary-strong', `0 0 15px rgba(${rgb}, 0.3), 0 0 30px rgba(${rgb}, 0.15)`);
+        root.style.setProperty('--glow-subtle', `0 0 5px rgba(${rgb}, 0.1)`);
 
     }, [themeColor]);
 
@@ -462,10 +463,9 @@ const MedicalDashboard = () => {
     const handleSubmit = async (diseaseId, e) => {
         e.preventDefault();
 
-        // Use state values instead of querying DOM
         const data = formValues[diseaseId];
         if (!data || Object.keys(data).length === 0) {
-            alert("Please fill in the fields");
+            toast.error("Please fill in all fields before analyzing.");
             return;
         }
 
@@ -494,13 +494,14 @@ const MedicalDashboard = () => {
                             probability: 'N/A' // Backend doesn't return probability yet, can be added if needed
                         }
                     }));
+                    toast.success("Analysis complete!");
                 } else {
                     console.error("Prediction failed:", result.error);
-                    alert(`Error: ${result.error}`);
+                    toast.error(result.error || "Prediction failed. Please try again.");
                 }
             } catch (error) {
                 console.error("Error submitting form:", error);
-                alert(`Failed to connect to the server at ${apiUrl}. Error: ${error.message}`);
+                toast.error(`Connection Error: ${error.message}`);
             } finally {
                 setIsAnalyzing(false);
             }
@@ -546,14 +547,7 @@ const MedicalDashboard = () => {
     return (
         <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} transition-colors duration-300 font-sans relative overflow-x-hidden`}>
 
-            <ParticleBackground darkMode={darkMode} themeColor={themeColor} />
-            <div
-                className="fixed inset-0 pointer-events-none z-0 transition-colors duration-500"
-                style={{
-                    background: `radial-gradient(circle at 50% 50%, ${themeColor}20 0%, transparent 70%)`,
-                    backdropFilter: 'blur(100px)'
-                }}
-            ></div>
+            <ParticleBackground darkMode={darkMode} />
 
             {/* Top Header */}
             <header className={`fixed top-0 left-0 right-0 z-50 h-16 md:h-20 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-6 m-2 md:m-4 mb-0 rounded-2xl transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-[150%]'}`}>
@@ -1228,6 +1222,9 @@ const MedicalDashboard = () => {
 
                                     const InputSection = (
                                         <div className={`rounded-2xl p-8 border shadow-inner transition-colors ${darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-lg'}`}>
+                                            <h3 className={`text-2xl font-semibold mb-8 border-b pb-4 ${darkMode ? 'text-[var(--color-primary)] border-white/10' : 'text-[var(--color-primary)] border-slate-200'}`}>
+                                                Patient Data Entry
+                                            </h3>
                                             <form onSubmit={(e) => handleSubmit(disease.id, e)} className="space-y-8">
                                                 <div className="flex flex-wrap justify-center gap-8">
                                                     {disease.fields.map((field) => (
