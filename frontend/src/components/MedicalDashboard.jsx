@@ -546,7 +546,14 @@ const MedicalDashboard = () => {
     return (
         <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} transition-colors duration-300 font-sans relative overflow-x-hidden`}>
 
-            <ParticleBackground darkMode={darkMode} />
+            <ParticleBackground darkMode={darkMode} themeColor={themeColor} />
+            <div
+                className="fixed inset-0 pointer-events-none z-0 transition-colors duration-500"
+                style={{
+                    background: `radial-gradient(circle at 50% 50%, ${themeColor}20 0%, transparent 70%)`,
+                    backdropFilter: 'blur(100px)'
+                }}
+            ></div>
 
             {/* Top Header */}
             <header className={`fixed top-0 left-0 right-0 z-50 h-16 md:h-20 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-6 m-2 md:m-4 mb-0 rounded-2xl transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-[150%]'}`}>
@@ -624,6 +631,7 @@ const MedicalDashboard = () => {
                     {/* Settings Toggle */}
                     <div className="relative">
                         <button
+                            onClick={() => setShowSettings(!showSettings)}
                             className={`p-2 rounded-xl transition-colors ${showSettings ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
                             title="Theme Settings"
                         >
@@ -1220,9 +1228,6 @@ const MedicalDashboard = () => {
 
                                     const InputSection = (
                                         <div className={`rounded-2xl p-8 border shadow-inner transition-colors ${darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-lg'}`}>
-                                            <h3 className={`text-2xl font-semibold mb-8 border-b pb-4 ${darkMode ? 'text-[var(--color-primary)] border-white/10' : 'text-[var(--color-primary)] border-slate-200'}`}>
-                                                Patient Data Entry
-                                            </h3>
                                             <form onSubmit={(e) => handleSubmit(disease.id, e)} className="space-y-8">
                                                 <div className="flex flex-wrap justify-center gap-8">
                                                     {disease.fields.map((field) => (

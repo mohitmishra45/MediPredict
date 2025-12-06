@@ -89,6 +89,20 @@ With $K=5$, the model achieved near-perfect accuracy for Kidney disease.
 Uses a tree-like graph of decisions. It splits the dataset into subsets based on the most significant attribute (Gini Impurity) at each node.
 It was selected for Liver Disease to capture non-linear relationships between enzymes.
 
+D. AI-Based Heart Disease Prediction Framework
+
+Cardiovascular diseases are the leading cause of death globally. Our proposed AI-based module for Heart Disease specifically targets early identification using physiological markers.
+
+1) **Feature Engineering**: The model utilizes 13 critical clinical features including Chest Pain Type (cp), Resting Blood Pressure (trestbps), and Serum Cholesterol (chol). We applied correlation matrix analysis to select these features, ensuring minimal redundancy.
+
+2) **Model Architecture**: The Gaussian Naive Bayes (GNB) algorithm was employed. Unlike discriminative models like Logistic Regression, GNB is a generative model that learns the joint probability distribution $P(X, Y)$.
+   \[
+   P(x_i | y) = \frac{1}{\sqrt{2\pi\sigma_y^2}} \exp \left( -\frac{(x_i - \mu_y)^2}{2\sigma_y^2} \right)
+   \]
+   This assumption of feature independence allows the model to perform robustly even with limited datasets, achieving a high recall rate which is crucial for medical emergencies.
+
+3) **Generative AI Assistant**: Complementing the GNB model, the platform integrates a Large Language Model (Google Gemini) to provide qualitative analysis. Users can interact with the AI to understand their "High Risk" or "Low Risk" classification, asking questions like "How does cholesterol affect my heart risk?", making the system not just a diagnostic tool but an educational one.
+
 IV. EXPERIMENTAL ANALYSIS AND RESULTS
 
 The models were evaluated on a held-out test set (20-40% of original data). We compared four algorithms for each dataset: Logistic Regression (LR), KNN, Naive Bayes (NB), and Decision Tree (DT).
