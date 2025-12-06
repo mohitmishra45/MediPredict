@@ -13,7 +13,7 @@ const ModelSplitLayout = ({ title, description, inputSection, statsSection }) =>
                 {/* Left Column: Input Form */}
                 <div className="flex flex-col">
                     <GlassCard className="h-full">
-                        <h2 className="text-2xl font-semibold mb-6 text-green-400 border-b border-white/10 pb-4">
+                        <h2 className="text-2xl font-semibold mb-6 text-green-400 border-b border-white/10 pb-4 text-center">
                             Input Parameters
                         </h2>
                         {inputSection}

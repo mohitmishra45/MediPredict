@@ -35,6 +35,8 @@ import {
     Dna,
     FileCode
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import Logo3D from './Logo3D';
 import ParticleBackground from './ParticleBackground';
 import Footer from './Footer';
@@ -1098,7 +1100,39 @@ const MedicalDashboard = () => {
                                                                     {msg.image && (
                                                                         <img src={msg.image} alt="Uploaded" className="max-w-full rounded-lg mb-2 border border-white/10" />
                                                                     )}
-                                                                    {msg.text}
+                                                                    {msg.role === 'user' ? (
+                                                                        msg.text
+                                                                    ) : (
+                                                                        <div className="prose prose-sm prose-invert max-w-none break-words">
+                                                                            <ReactMarkdown
+                                                                                remarkPlugins={[remarkGfm]}
+                                                                                components={{
+                                                                                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 space-y-1 my-2" {...props} />,
+                                                                                    ol: ({ node, ...props }) => <ol className="list-decimal pl-4 space-y-1 my-2" {...props} />,
+                                                                                    li: ({ node, ...props }) => <li className="mb-0.5" {...props} />,
+                                                                                    p: ({ node, ...props }) => <p className="mb-2 last:mb-0 heading-relaxed" {...props} />,
+                                                                                    strong: ({ node, ...props }) => <strong className="font-bold text-indigo-300" {...props} />,
+                                                                                    a: ({ node, ...props }) => <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                                                                    h1: ({ node, ...props }) => <h1 className="text-xl font-bold my-2" {...props} />,
+                                                                                    h2: ({ node, ...props }) => <h2 className="text-lg font-bold my-2" {...props} />,
+                                                                                    h3: ({ node, ...props }) => <h3 className="text-md font-bold my-1" {...props} />,
+                                                                                    code: ({ node, inline, className, children, ...props }) => {
+                                                                                        return inline ? (
+                                                                                            <code className="bg-black/30 rounded px-1 py-0.5 text-xs font-mono" {...props}>
+                                                                                                {children}
+                                                                                            </code>
+                                                                                        ) : (
+                                                                                            <code className="block bg-black/30 rounded p-2 text-xs font-mono my-2 overflow-x-auto" {...props}>
+                                                                                                {children}
+                                                                                            </code>
+                                                                                        );
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                {msg.text}
+                                                                            </ReactMarkdown>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -1190,9 +1224,9 @@ const MedicalDashboard = () => {
                                                 Patient Data Entry
                                             </h3>
                                             <form onSubmit={(e) => handleSubmit(disease.id, e)} className="space-y-8">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                <div className="flex flex-wrap justify-center gap-8">
                                                     {disease.fields.map((field) => (
-                                                        <div key={field.name} className="space-y-3 group">
+                                                        <div key={field.name} className="space-y-3 group w-full md:w-[calc(50%-1rem)]">
                                                             <Input
                                                                 label={field.label}
                                                                 type={field.type}

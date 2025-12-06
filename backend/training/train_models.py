@@ -113,43 +113,6 @@ def train_liver():
     except Exception as e:
         print(f"Failed to train Liver model: {e}")
 
-def train_lung():
-    print("\n--- Training Lung Cancer Model ---")
-    try:
-        df = pd.read_csv(os.path.join(DATA_DIR, 'lung.csv'))
-        
-        le_gender = LabelEncoder()
-        df['Gender'] = le_gender.fit_transform(df['Gender'])
-        
-        le_level = LabelEncoder()
-        df['Level'] = le_level.fit_transform(df['Level'])
-        
-        for col in df.select_dtypes(include='number').columns:
-            df[col] = df[col].fillna(df[col].mean())
-            
-        for col in df.select_dtypes(include='object').columns:
-            df[col] = df[col].fillna(df[col].mode()[0])
-            
-        X = df[['Gender','Age','Passive Smoker','Coughing of Blood','Balanced Diet','Smoking','Air Pollution','Obesity']]
-        y = df['Level']
-        
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        
-        scaler = MinMaxScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
-        X_test_scaled = scaler.transform(X_test)
-        
-        model, accuracy, all_accuracies = get_best_model(X_train_scaled, X_test_scaled, y_train, y_test)
-        
-        joblib.dump({
-            'model': model,
-            'scaler': scaler,
-            'encoders': {'Gender': le_gender, 'Level': le_level},
-            'all_accuracies': all_accuracies
-        }, os.path.join(MODEL_DIR, 'lung_model.pkl'))
-        print("Lung Cancer model saved.")
-    except Exception as e:
-        print(f"Failed to train Lung Cancer model: {e}")
 
 def train_stroke():
     print("\n--- Training Stroke Model ---")
@@ -285,7 +248,7 @@ def train_heart():
 if __name__ == "__main__":
     train_diabetes()
     train_liver()
-    train_lung()
+
     train_stroke()
     train_kidney()
     train_heart()

@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 import os
 
 # Load environment variables
-load_dotenv()
+basedir = os.path.abspath(os.path.dirname(__file__))
+env_path = os.path.join(os.path.dirname(basedir), '.env')
+load_dotenv(env_path)
 
 from backend.routers.diabetes_route import diabetes_bp
 from backend.routers.heart_route import heart_bp
@@ -37,7 +39,7 @@ def home():
 
 @app.route('/api/metrics', methods=['GET'])
 def get_metrics():
-    models = ['diabetes', 'heart', 'kidney', 'liver', 'lung', 'stroke']
+    models = ['diabetes', 'heart', 'kidney', 'liver', 'stroke']
     metrics = {}
     
     for name in models:

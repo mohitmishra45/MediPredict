@@ -41,3 +41,7 @@ yarn-error.log
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+frontend/build_*.txt
